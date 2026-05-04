@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1087950914615",
+    "firebase_url": "https://blossom-4722c-default-rtdb.firebaseio.com",
+    "project_id": "blossom-4722c",
+    "storage_bucket": "blossom-4722c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087950914615:android:57e5c262b6eb645a342bb2",
+        "android_client_info": {
+          "package_name": "com.udshirokova.Blossom2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2FfVlI93OzOFe6WAJT5mkuqj5KUpiICg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
