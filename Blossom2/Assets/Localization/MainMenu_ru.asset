@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_ru
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: ru
+  m_SharedData: {fileID: 11400000, guid: 82c968cfdebf7bd47b3a39ceacb9ac38, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 31794466816
+    m_Localized: "\u041D\u0430\u0437\u0430\u0434"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 489569193984
+    m_Localized: "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0437\u0432\u0443\u043A"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5368400384000
+    m_Localized: "\u0413\u0440\u043E\u043C\u043A\u043E\u0441\u0442\u044C \u043C\u0443\u0437\u044B\u043A\u0438"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5374159163392
+    m_Localized: "\u0417\u0432\u0443\u043A\u043E\u0432\u044B\u0435 \u044D\u0444\u0444\u0435\u043A\u0442\u044B"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5378626097152
+    m_Localized: "\u041A\u0430\u0447\u0435\u0441\u0442\u0432\u043E \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5382308696064
+    m_Localized: "\u042F\u0437\u044B\u043A"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5389690671104
+    m_Localized: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8106320400384
+    m_Localized: "\u041D\u0438\u0437\u043A\u043E\u0435"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8111278067712
+    m_Localized: "\u041D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E\u0435"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8113941450752
+    m_Localized: "\u0412\u044B\u0441\u043E\u043A\u043E\u0435"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
