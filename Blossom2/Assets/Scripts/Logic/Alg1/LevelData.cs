@@ -35,7 +35,7 @@ public class LevelData : MonoBehaviour
     {
         return creator.GetWindowSize();
     }
-    public void HandleEvent(object sender, EventArgs e)
+    public void CheckIfWin(object sender, EventArgs e)
     {
         if (sender.GetType() == typeof(VertexView1))
         {
