@@ -58,6 +58,30 @@ MonoBehaviour:
     m_Localized: High
     m_Metadata:
       m_Items: []
+  - m_Id: 2744546405978112
+    m_Localized: Choose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745226453651456
+    m_Localized: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745228450140160
+    m_Localized: Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745230593429504
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745996418813952
+    m_Localized: Blooming
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2909369752162304
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

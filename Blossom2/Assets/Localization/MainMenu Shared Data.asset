@@ -16,43 +16,67 @@ MonoBehaviour:
   m_TableCollectionNameGuidString: 82c968cfdebf7bd47b3a39ceacb9ac38
   m_Entries:
   - m_Id: 31794466816
-    m_Key: mainMenu.applyBut
+    m_Key: options.applyBut
     m_Metadata:
       m_Items: []
   - m_Id: 489569193984
-    m_Key: mainMenu.mainVol
+    m_Key: options.mainVol
     m_Metadata:
       m_Items: []
   - m_Id: 5368400384000
-    m_Key: mainMenu.musicVol
+    m_Key: options.musicVol
     m_Metadata:
       m_Items: []
   - m_Id: 5374159163392
-    m_Key: mainMenu.sfx
+    m_Key: options.sfx
     m_Metadata:
       m_Items: []
   - m_Id: 5378626097152
-    m_Key: mainMenu.quality
+    m_Key: options.quality
     m_Metadata:
       m_Items: []
   - m_Id: 5382308696064
-    m_Key: mainMenu.language
+    m_Key: options.language
     m_Metadata:
       m_Items: []
   - m_Id: 5389690671104
-    m_Key: mainMenu.settingsHeading
+    m_Key: options.settingsHeading
     m_Metadata:
       m_Items: []
   - m_Id: 8106320400384
-    m_Key: mainMenu.quality_low
+    m_Key: options.quality_low
     m_Metadata:
       m_Items: []
   - m_Id: 8111278067712
-    m_Key: mainMenu.quality_medium
+    m_Key: options.quality_medium
     m_Metadata:
       m_Items: []
   - m_Id: 8113941450752
-    m_Key: mainMenu.quality_high
+    m_Key: options.quality_high
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2744546405978112
+    m_Key: chooseLevel.chooseBut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2909369752162304
+    m_Key: chooseLevel.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745226453651456
+    m_Key: mainMenu.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745228450140160
+    m_Key: mainMenu.options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745230593429504
+    m_Key: mainMenu.quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2745996418813952
+    m_Key: mainMenu.gameName
     m_Metadata:
       m_Items: []
   m_Metadata:

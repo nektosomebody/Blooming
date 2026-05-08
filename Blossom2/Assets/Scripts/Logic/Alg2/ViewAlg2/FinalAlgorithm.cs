@@ -15,68 +15,126 @@ namespace Alg2
         [SerializeField] int n = 6;
         [SerializeField] float width = 100f;
         [SerializeField] float height = 100f;
+        [SerializeField] Camera cam;
+        public EventHandler cleanFlowEvent;
 
         int minFlowAmount = 3;
         int maxFlowAmount = 15;
-        int dim = 2;
-        
+        int dim = 2;        
         int countVerts;
         DelaunatorUser user;
         Dinic flowCalculator;
-        List<Vertex> sources;
-        List<Vertex> targets;
+        Dictionary<int, int> vertexCapacities = new();
+        private HashSet<Vertex> sources = new();  
+        private HashSet<Vertex> targets = new();       
+        public HashSet<Vertex> Sources
+        {
+            get
+            {
+                if (sources == null || sources.Count == 0)
+                    throw new Exception("Sources not generated yet");
+                return sources;
+            }
+            private set => sources = value;
+        }
+        public HashSet<Vertex> Targets
+        {
+            get
+            {
+                if (targets == null || targets.Count == 0)
+                    throw new Exception("Targets not generated yet");
+                return targets;
+            }
+            private set => targets = value;
+        }
+        
 
         public void Awake()
         {
             GenerateLevel();
+            
+        }
+        public void Start()
+        {
+            FitCamera();
+        }
+
+        private void FitCamera()
+        {
+            cam.transform.position = new Vector3(width / 2f, cam.transform.position.y, height / 2f);
+
+            if (cam.orthographic)
+            {
+                float aspect = (float)Screen.width / Screen.height;
+                cam.orthographicSize = Mathf.Max(height / 2f, width / 2f / aspect);
+            }
         }
         
         public void GenerateLevel()
         {
             countVerts = n;
-            user = new(n, height, width, new SobolSequence(dim));
+            user = new DelaunatorUser(n, height, width, new SobolSequence(dim));
             // 2 more because need 2 addition for multisource alg
-            flowCalculator = new(n + 2);
+            flowCalculator = new Dinic(n + 2);
 
-            GetToFlowCalculator tmp = new(user, flowCalculator, new RandomIntGenerator(minFlowAmount, maxFlowAmount));
+            GetToFlowCalculator adapter = new(user, flowCalculator, new RandomIntGenerator(minFlowAmount, maxFlowAmount));
             
-            GenerateSourcesAndSincs();
-            tmp.UploadEdges(sources, targets);
+            GenerateSourcesAndSincs(2,2);
+            adapter.UploadEdges(sources, targets);
 
-            Debug.Log($"{sources[0]} {sources[1]} {targets[0]} {targets[1]}");
+            Debug.Log($"{sources.ElementAt(0)} {sources.ElementAt(1)} {targets.ElementAt(0)} {targets.ElementAt(1)}");
         }
 
-        private void GenerateSourcesAndSincs(int countSources = 2, int countTargets = 2)
+        private void GenerateSourcesAndSincs(int countSources, int countTargets)
         {
-            if (n < countSources + countTargets + 1 || n / 2 < countSources || n / 2 < countTargets)
-            {
+            if (n < countSources + countTargets + 1)
                 throw new Exception("Lack of vertexes");
-            }
-            RandomIntGenerator genSources = new(0, countVerts / 2 - 1);
-            RandomIntGenerator genTargets = new(countVerts / 2, countVerts - 1);
-            HashSet<Vertex> tmpS = new();
-            HashSet<Vertex> tmpT = new();
-            List<Vertex> all_vertexes = GetAllVertexes();
 
-            while (tmpS.Count < countSources)
-            {
-                tmpS.Add(all_vertexes[genSources.Next()]);
-            }
-            while (tmpT.Count < countTargets)
-            {
-                tmpT.Add(all_vertexes[genTargets.Next()]);
-            }
-            sources = tmpS.ToList();
-            targets = tmpT.ToList();
+            List<Vertex> all_vertexes = GetAllVertexes();
+            all_vertexes.Sort((a, b) => b.y.CompareTo(a.y));
+
+            // top of screen
+            Stack<Vertex> sourcesStack = new();
+            for (int i = 0; i < countSources; i++)
+                sources.Add(all_vertexes[i]); 
+
+             // bottom of screen
+            Stack<Vertex> targetsStack = new();
+            for (int i = all_vertexes.Count - 1; i >= all_vertexes.Count - countTargets; i--)
+                targets.Add(all_vertexes[i]);
+        }
+
+        public void SetVertexCapacity(int vertexInd, int capacity)
+        {
+            vertexCapacities[vertexInd] = capacity;
         }
 
         public int GetMaxFlow()
         {
-            return MultiSourceDinic.MaxFlowMulti(
-            countVerts,
-            sources,
-            targets,
-            flowCalculator);
+            int splitN = countVerts * 2;
+            Dinic splitGraph = new Dinic(splitN + 2);
+
+            var sourceInds = new HashSet<int>(sources.Select(s => s.ind));
+            var targetInds = new HashSet<int>(targets.Select(t => t.ind));
+            var edges = flowCalculator.GetEdges();
+
+            // copy edges with vertex splitting for middle vertices:
+            // outgoing from middle vertex uses v_out (ind + countVerts), incoming uses v_in (original ind)
+            for (int i = 0; i < countVerts; i++)
+            {
+                bool isMiddle = !sourceInds.Contains(i) && !targetInds.Contains(i);
+                int fromInd = isMiddle ? i + countVerts : i;
+                foreach (var edge in edges[i])
+                    splitGraph.AddEdge(new Vertex(fromInd), new Vertex(edge.To.ind), edge.Cap);
+            }
+
+            // add internal v_in → v_out edges with vertex capacity for each middle vertex
+            foreach (var kvp in vertexCapacities)
+                splitGraph.AddEdge(new Vertex(kvp.Key), new Vertex(kvp.Key + countVerts), kvp.Value);
+
+            int ans = MultiSourceDinic.MaxFlowMulti(splitN, sources, targets, splitGraph);
+            cleanFlowEvent?.Invoke(this, EventArgs.Empty);
+            return ans;
         }
 
         public List<Vertex> GetAllVertexes()

@@ -41,7 +41,7 @@ public class Spawner1 : MonoBehaviour
                 if (graph[j][k].isRotateAble)
                 {
                     // subscribing to an event to verify that the graph is connected again
-                    tmp.ClickedEvent += levelData.HandleEvent; 
+                    tmp.ClickedEvent += levelData.CheckIfWin; 
                     levelData.playerWon += tmp.Rotate;
                     levelData.playerWon += tmp.PlayBloomingAnimation;
                 }

@@ -26,6 +26,7 @@ public class Registration
             Debug.Log($"User signed in successfully: {task.User.UserId}");
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", task.User.DisplayName, task.User.UserId);
             await UpdateUsersProfile(userName);
+            await DatabaseConnection.Instance.InitUserProfileAsync(task.User.UserId, userName);
         }
         catch (Exception e)
         {
@@ -102,16 +103,17 @@ public class Registration
         try
         {
             await auth.SendPasswordResetEmailAsync(email);
-
             Debug.Log("Password reset email sent successfully.");
         }
         catch (Firebase.FirebaseException e)
         {
             Debug.LogError("Firebase error: " + e);
+            throw;
         }
         catch (Exception e)
         {
             Debug.LogError("Unknown error: " + e);
+            throw;
         }
     }
 

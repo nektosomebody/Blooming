@@ -26,6 +26,11 @@ namespace Alg2.Domains
             Flow = 0;
             Rev = rev;
         }
+
+        public void ResetFlow()
+        {
+            Flow = 0;
+        }
     }
 
 }

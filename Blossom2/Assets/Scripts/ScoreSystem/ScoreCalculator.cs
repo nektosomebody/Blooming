@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using Firebase.Auth;
 using UnityEngine;
 using TMPro;
-using Firebase.Database;
-using Assets.Scripts.ScoreSystem;
-
-
 
 public class ScoreCalculator : MonoBehaviour
 {
     [SerializeField] GameObject timer;
     [SerializeField] TMP_Text textForScore;
     [SerializeField] float multiplier = 1000;
+    [SerializeField] string levelType = "alg1";
     private float bestScore = -1f;
 
-    DatabaseConnection dbConnnect = new();
-
-    void SetResult(object sender, EventArgs eventArgs)
+    async void SetResult(object sender, EventArgs eventArgs)
     {
         int result = CalcResult(timer.GetComponent<TimerUI>().totalSeconds);
         textForScore.text = $"Your score is: {result}";
-        dbConnnect.AddNewScore("test", result);
+
+        string uid = FirebaseAuth.DefaultInstance.CurrentUser?.UserId;
+        if (uid != null)
+            await DatabaseConnection.Instance.SaveScoreAsync(uid, levelType, result);
     }
 
     int CalcResult(float seconds)
@@ -31,4 +26,3 @@ public class ScoreCalculator : MonoBehaviour
         return Mathf.RoundToInt(seconds / bestScore * multiplier);
     }
 }
-

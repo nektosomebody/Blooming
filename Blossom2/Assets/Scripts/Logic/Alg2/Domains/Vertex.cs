@@ -34,6 +34,10 @@ namespace Alg2.Domains
         {
             AllNeighbours.Add(vert);
         }
+        public void RemoveFromAllNeighbours(Vertex vert)
+        {
+            AllNeighbours.Remove(vert);
+        }
         public int CompareTo(Vertex other)
         {
             if (other == null) return 1;

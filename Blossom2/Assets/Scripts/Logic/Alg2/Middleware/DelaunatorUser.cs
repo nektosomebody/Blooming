@@ -26,9 +26,12 @@ namespace Alg2.Interfaces
             CreateLevel();
         }
 
+        private const float MinAngleDeg = 15f;
+
         private void CreateLevel()
         {
             CreateGraph(CreatePoints());
+            FilterNarrowEdges(MinAngleDeg);
         }
         private IPoint[] CreatePoints()
         {
@@ -85,6 +88,55 @@ namespace Alg2.Interfaces
                 int y = (int)(p.Item2 * MULTIPLIER);
                 return HashCode.Combine(x, y);
             }
+        }
+
+        private void FilterNarrowEdges(float minAngleDeg)
+        {
+            float minAngleRad = minAngleDeg * MathF.PI / 180f;
+
+            foreach (var vertex in Graph.Values)
+            {
+                bool changed = true;
+                while (changed)
+                {
+                    changed = false;
+                    var neighbours = vertex.AllNeighbours.ToList();
+                    if (neighbours.Count < 2) break;
+
+                    neighbours.Sort((a, b) =>
+                    {
+                        float angleA = MathF.Atan2(a.y - vertex.y, a.x - vertex.x);
+                        float angleB = MathF.Atan2(b.y - vertex.y, b.x - vertex.x);
+                        return angleA.CompareTo(angleB);
+                    });
+
+                    int n = neighbours.Count;
+                    for (int i = 0; i < n; i++)
+                    {
+                        Vertex n1 = neighbours[i];
+                        Vertex n2 = neighbours[(i + 1) % n];
+
+                        float a1 = MathF.Atan2(n1.y - vertex.y, n1.x - vertex.x);
+                        float a2 = MathF.Atan2(n2.y - vertex.y, n2.x - vertex.x);
+                        float diff = MathF.Abs(a2 - a1);
+                        if (diff > MathF.PI) diff = 2f * MathF.PI - diff;
+
+                        if (diff < minAngleRad)
+                        {
+                            Vertex toRemove = DistSq(vertex, n1) < DistSq(vertex, n2) ? n1 : n2;
+                            vertex.RemoveFromAllNeighbours(toRemove);
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static float DistSq(Vertex a, Vertex b)
+        {
+            float dx = a.x - b.x, dy = a.y - b.y;
+            return dx * dx + dy * dy;
         }
 
         public void ShowGraph()

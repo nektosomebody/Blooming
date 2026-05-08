@@ -11,8 +11,8 @@ namespace Alg2.Interfaces
     {
         public static int MaxFlowMulti(
             int n,
-            List<Vertex> sources,
-            List<Vertex> sinks,
+            HashSet<Vertex> sources,
+            HashSet<Vertex> targets,
             IMaxFlowCalculator flowCalc
             )
         {
@@ -23,7 +23,7 @@ namespace Alg2.Interfaces
             foreach (var s in sources)
                 flowCalc.AddEdge(superSource, s, flowCalc.GetINF());
 
-            foreach (var t in sinks)
+            foreach (var t in targets)
                 flowCalc.AddEdge(t, superSink, flowCalc.GetINF());
 
             return flowCalc.MaxFlow(superSource, superSink);
