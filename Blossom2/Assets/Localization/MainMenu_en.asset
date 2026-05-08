@@ -82,6 +82,90 @@ MonoBehaviour:
     m_Localized: Back
     m_Metadata:
       m_Items: []
+  - m_Id: 4266036070780928
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4288351223484416
+    m_Localized: Sign In
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4288419020214272
+    m_Localized: Sign Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4293613913182208
+    m_Localized: Please, enter the email address. We will send you instructions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295974178066432
+    m_Localized: Input email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295975662850048
+    m_Localized: Input password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295976614957056
+    m_Localized: Input name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295978703720448
+    m_Localized: Confirm password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4296514467336192
+    m_Localized: Forget password?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4297644979064832
+    m_Localized: Enter text...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702492241235968
+    m_Localized: User not found
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702498037764096
+    m_Localized: Wrong password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702498675298304
+    m_Localized: Email already in use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702499627405312
+    m_Localized: Invalid email format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702900292489216
+    m_Localized: Authorization error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702903513714688
+    m_Localized: An error occurred. Please try again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4703020597710848
+    m_Localized: Passwords do not match
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4698009813716992
+    m_Localized: ' '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4762991930707968
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4763579967934464
+    m_Localized: Congratulations!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4763708531740672
+    m_Localized: 'Your score: '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

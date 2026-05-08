@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Alg2.Domains;
 using Alg2.Interfaces;
@@ -14,6 +13,9 @@ public class Spawner2: MonoBehaviour
     [SerializeField] GameObject sourcePrefab;
     [SerializeField] GameObject targetPrefab;
     [SerializeField] GameObject flowPrefab;
+    [SerializeField] GameObject edgeStartPrefab;
+    [SerializeField] GameObject edgeEndPrefab;
+    [SerializeField] float vertexRadius = 5f;
     [SerializeField] float yPos = 0f;
     [SerializeField] int minVertexCapacity = 5;
     [SerializeField] int maxVertexCapacity = 20;
@@ -30,6 +32,7 @@ public class Spawner2: MonoBehaviour
         all_vertices.Sort((a, b) => a.CompareTo(b));
 
         HashSet<TargetVertex> targetVertices = new();
+        HashSet<MiddleVertexView> middleVertices = new();
         Dictionary<int, VertexViewParent> vertexViewMap = new();
         // instantiate vertices
         foreach (Vertex vertDomain in all_vertices)
@@ -50,15 +53,17 @@ public class Spawner2: MonoBehaviour
             else
             {
                 obj = Instantiate(middleVertexPrefab, pos, Quaternion.identity);
-                // only middle vertices have capacities
                 flowAlg.SetVertexCapacity(vertDomain.ind, capacity);
             }
 
             VertexViewParent view = obj.GetComponent<VertexViewParent>();
             view.Init(vertDomain, capacity);
             vertexViewMap[vertDomain.ind] = view;
+            if (view is MiddleVertexView middleView)
+                middleVertices.Add(middleView);
         }
-        resultManager.Init(targetVertices, flowAlg.GetMaxFlow());
+        resultManager.Init(targetVertices, middleVertices, flowAlg.GetMaxFlow());
+        GetComponent<LevelFinished>().Init(resultManager);
         var all_edges = flowAlg.GetEdges();
         /*
         because all_vertexes contains all the vertices that are on the field, 
@@ -80,6 +85,9 @@ public class Spawner2: MonoBehaviour
 
                 GameObject obj = Instantiate(edgePrefab, pos, rot);
                 GameObject flow = Instantiate(flowPrefab, pos - dir / 2, rot);
+                Vector3 offset = dir.normalized * vertexRadius;
+                Instantiate(edgeStartPrefab, posFrom + offset, rot);
+                Instantiate(edgeEndPrefab, posTo - offset, rot);
 
                 float length = Vector3.Distance(posFrom, posTo);
                 Vector3 scale = obj.transform.localScale;
@@ -89,10 +97,14 @@ public class Spawner2: MonoBehaviour
                 EdgeWithFlowView view = obj.GetComponent<EdgeWithFlowView>();
                 // important to set lenght after changing the scale
                 Debug.Log($"{obj.transform.localScale} {length}");
-                view.Init(edgeDomain, length, flow);
+                view.Init(edgeDomain, length, flow, vertexViewMap[from.ind], posFrom, posTo);
                 flowAlg.cleanFlowEvent += view.ResetFlow;
                 if (vertexViewMap.TryGetValue(edgeDomain.To.ind, out var toView))
+                {
                     view.FlowChanged += toView.IncreaseFlow;
+                    if (toView is MiddleVertexView middleToView)
+                        view.FlowDecreased += middleToView.OnFlowDecreased;
+                }
             }
         }
     }

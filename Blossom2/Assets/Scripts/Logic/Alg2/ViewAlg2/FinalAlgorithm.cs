@@ -13,13 +13,15 @@ namespace Alg2
     public class FinalAlgorithm: MonoBehaviour
     {
         [SerializeField] int n = 6;
-        [SerializeField] float width = 100f;
-        [SerializeField] float height = 100f;
+        [SerializeField] private float Width = 100f;
+        [SerializeField] private float Height = 100f;
+        [SerializeField] private int countSources = 2;
+        [SerializeField] private int countTargets = 2;
         [SerializeField] Camera cam;
-        public EventHandler cleanFlowEvent;
 
-        int minFlowAmount = 3;
-        int maxFlowAmount = 15;
+        [SerializeField] int minFlowAmount = 3;
+        [SerializeField] int maxFlowAmount = 15;
+        public EventHandler cleanFlowEvent;
         int dim = 2;        
         int countVerts;
         DelaunatorUser user;
@@ -56,30 +58,21 @@ namespace Alg2
         }
         public void Start()
         {
-            FitCamera();
+            cam.GetComponent<CameraFitter>().FitCamera(Width, Height, new Vector3(Width / 2, transform.position.y, Height / 2));
         }
 
-        private void FitCamera()
-        {
-            cam.transform.position = new Vector3(width / 2f, cam.transform.position.y, height / 2f);
-
-            if (cam.orthographic)
-            {
-                float aspect = (float)Screen.width / Screen.height;
-                cam.orthographicSize = Mathf.Max(height / 2f, width / 2f / aspect);
-            }
-        }
+        
         
         public void GenerateLevel()
         {
             countVerts = n;
-            user = new DelaunatorUser(n, height, width, new SobolSequence(dim));
+            user = new DelaunatorUser(n, Height, Width, new SobolSequence(dim));
             // 2 more because need 2 addition for multisource alg
             flowCalculator = new Dinic(n + 2);
 
             GetToFlowCalculator adapter = new(user, flowCalculator, new RandomIntGenerator(minFlowAmount, maxFlowAmount));
             
-            GenerateSourcesAndSincs(2,2);
+            GenerateSourcesAndSincs(countSources, countTargets);
             adapter.UploadEdges(sources, targets);
 
             Debug.Log($"{sources.ElementAt(0)} {sources.ElementAt(1)} {targets.ElementAt(0)} {targets.ElementAt(1)}");

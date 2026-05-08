@@ -5,74 +5,40 @@ using UnityEngine.SceneManagement;
 
 public class Navigator : MonoBehaviour
 {
-    public GameObject RegisterWnd;
-    public GameObject ForgetPassWnd;
-    public GameObject SignInWnd;
 
-    // Registration fields
+    [Header("Register inputs")]
     public TMPro.TMP_InputField registerName;
     public TMPro.TMP_InputField registerEmail;
     public TMPro.TMP_InputField registerPassword;
     public TMPro.TMP_InputField confirmPassword;
 
-    // Registration error labels (assign in Inspector)
-    [SerializeField] private TMPro.TMP_Text registerNameError;
-    [SerializeField] private TMPro.TMP_Text registerEmailError;
-    [SerializeField] private TMPro.TMP_Text registerPasswordError;
-    [SerializeField] private TMPro.TMP_Text confirmPasswordError;
-    [SerializeField] private TMPro.TMP_Text registerGeneralError;
-
-    // Sign-in fields
+    [Header("Sign-in inputs")]
     public TMPro.TMP_InputField signInEmail;
     public TMPro.TMP_InputField signInPassword;
 
-    // Sign-in error labels (assign in Inspector)
-    [SerializeField] private TMPro.TMP_Text signInEmailError;
-    [SerializeField] private TMPro.TMP_Text signInPasswordError;
-    [SerializeField] private TMPro.TMP_Text signInGeneralError;
-
-    // Forgot password field
+    [Header("Forgot password input")]
     public TMPro.TMP_InputField emailToChangePass;
 
-    // Forgot password error label (assign in Inspector)
-    [SerializeField] private TMPro.TMP_Text forgetPassError;
+    [SerializeField] ErrorOperator errorOperator;
 
-    private Registration registration;
+    private Authentication registration;
 
     private void Awake()
     {
-        registration = new Registration();
+        registration = new Authentication();
     }
 
-    // Navigation
-    public void GoToChangePassword()
-    {
-        SignInWnd.SetActive(false);
-        ForgetPassWnd.SetActive(true);
-    }
-    public void GoToRegistration()
-    {
-        SignInWnd.SetActive(false);
-        RegisterWnd.SetActive(true);
-    }
-    public void GoToSignIn()
-    {
-        RegisterWnd.SetActive(false);
-        ForgetPassWnd.SetActive(false);
-        SignInWnd.SetActive(true);
-    }
-
-    // Button handlers
-    public void OnSignIn()              => _ = SignInUser();
-    public void OnSignUp()              => _ = CreateUser();
+    public void OnSignIn() => _ = SignInUser();
+    public void OnSignUp() => _ = CreateUser();
     public void OnForgetPasswordClicked() => _ = ForgetPassword();
 
     private async Task ForgetPassword()
     {
-        ClearErrors(forgetPassError);
+        errorOperator.ClearErrors(ErrorContext.ForgetPassword);
 
         string emailErr = InputValidator.ValidateEmail(emailToChangePass.text);
-        if (emailErr != null) { ShowError(forgetPassError, emailErr); return; }
+        errorOperator.ShowForgetPassValidation(emailErr);
+        if (emailErr != null) return;
 
         try
         {
@@ -80,96 +46,62 @@ public class Navigator : MonoBehaviour
         }
         catch (Exception e)
         {
-            ShowError(forgetPassError, GetFirebaseMessage(e));
+            errorOperator.ShowFirebaseError(e, ErrorContext.ForgetPassword);
         }
     }
 
     private async Task SignInUser()
     {
-        ClearErrors(signInEmailError, signInPasswordError, signInGeneralError);
+        errorOperator.ClearErrors(ErrorContext.SignIn);
 
         string emailErr = InputValidator.ValidateEmail(signInEmail.text);
-        string passErr  = InputValidator.ValidatePassword(signInPassword.text);
-
-        if (emailErr != null) ShowError(signInEmailError, emailErr);
-        if (passErr  != null) ShowError(signInPasswordError, passErr);
+        string passErr = InputValidator.ValidatePassword(signInPassword.text);
+        errorOperator.ShowSignInValidation(emailErr, passErr);
         if (emailErr != null || passErr != null) return;
 
         try
         {
             await registration.SignInUser(signInEmail.text, signInPassword.text);
+            Debug.Log("User signed in successfully.");
             LoadNextScene();
         }
         catch (Exception e)
         {
-            ShowError(signInGeneralError, GetFirebaseMessage(e));
+            errorOperator.ShowFirebaseError(e, ErrorContext.SignIn);
         }
     }
 
     private async Task CreateUser()
     {
-        ClearErrors(registerNameError, registerEmailError,
-                    registerPasswordError, confirmPasswordError, registerGeneralError);
+        errorOperator.ClearErrors(ErrorContext.Register);
 
-        string nameErr  = InputValidator.ValidateName(registerName.text);
+        string nameErr = InputValidator.ValidateName(registerName.text);
         string emailErr = InputValidator.ValidateEmail(registerEmail.text);
-        string passErr  = InputValidator.ValidatePassword(registerPassword.text);
-        bool   match    = registerPassword.text == confirmPassword.text;
+        string passErr = InputValidator.ValidatePassword(registerPassword.text);
+        bool match = registerPassword.text == confirmPassword.text;
 
-        if (nameErr  != null) ShowError(registerNameError,     nameErr);
-        if (emailErr != null) ShowError(registerEmailError,    emailErr);
-        if (passErr  != null) ShowError(registerPasswordError, passErr);
-        if (!match)           ShowError(confirmPasswordError,  "Пароли не совпадают");
-
+        errorOperator.ShowRegisterValidation(nameErr, emailErr, passErr, match);
         if (nameErr != null || emailErr != null || passErr != null || !match) return;
 
         try
         {
             await registration.CreateUser(registerEmail.text, registerPassword.text, registerName.text);
+            Debug.Log("User created successfully.");
             LoadNextScene();
         }
         catch (Exception e)
         {
-            ShowError(registerGeneralError, GetFirebaseMessage(e));
+            errorOperator.ShowFirebaseError(e, ErrorContext.Register);
         }
     }
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void OnDestroy()
     {
         registration.OnDestroy();
-    }
-
-    // Helpers
-    private static void ShowError(TMPro.TMP_Text label, string message)
-    {
-        if (label != null) label.text = message;
-    }
-
-    private static void ClearErrors(params TMPro.TMP_Text[] labels)
-    {
-        foreach (var label in labels)
-            if (label != null) label.text = string.Empty;
-    }
-
-    private static string GetFirebaseMessage(Exception e)
-    {
-        if (e is Firebase.FirebaseException firebaseEx)
-        {
-            switch ((Firebase.Auth.AuthError)firebaseEx.ErrorCode)
-            {
-                case Firebase.Auth.AuthError.UserNotFound:      return "Пользователь не найден";
-                case Firebase.Auth.AuthError.WrongPassword:
-                case Firebase.Auth.AuthError.InvalidCredential: return "Неверный пароль";
-                case Firebase.Auth.AuthError.EmailAlreadyInUse: return "Email уже используется";
-                case Firebase.Auth.AuthError.InvalidEmail:      return "Неверный формат email";
-                default:                                        return "Ошибка авторизации";
-            }
-        }
-        return "Произошла ошибка. Попробуйте снова";
     }
 }

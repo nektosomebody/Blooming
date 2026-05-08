@@ -4,11 +4,17 @@ using TMPro;
 
 public class MiddleVertexView : VertexViewParent
 {
-    [SerializeField] GameObject labelPrefab;
-    [SerializeField] float yUpper = 10f;
-    [SerializeField] float zUpper = 10f;
+    [SerializeField] GameObject labelObj;
+    [SerializeField] Transform valve;
+    public float DegreesPerFlow = 50f;
+    public float DegreesPerFrame = 1f;
     TMP_Text flowLabel;
     public int Capacity { get; private set; }
+
+    float targetAngle = 0f;
+    float rotatedAngle = 0f;
+
+    
 
     public override void Init(Vertex v, int capacity)
     {
@@ -17,16 +23,39 @@ public class MiddleVertexView : VertexViewParent
         Capacity = capacity;
         CurFlow = 0;
 
-        if (labelPrefab != null)
+        flowLabel = labelObj.GetComponent<TMP_Text>();
+        if (flowLabel != null)
+            flowLabel.text = $"0/{Capacity}";
+    }
+
+    void Update()
+    {
+        if (valve == null || Mathf.Approximately(rotatedAngle, targetAngle)) return;
+        float diff = targetAngle - rotatedAngle;
+        float step = Mathf.Min(DegreesPerFrame, Mathf.Abs(diff));
+        if (diff > 0)
         {
-            GameObject labelObj = Instantiate(labelPrefab,
-                transform.position + new Vector3(0f, yUpper, zUpper),
-                Quaternion.Euler(90f, 0f, 0f));
-            flowLabel = labelObj.GetComponent<TMP_Text>();
-            if (flowLabel != null)
-                flowLabel.text = $"0/{Capacity}";
+            rotatedAngle += step;
+            valve.Rotate(Vector3.forward, -step);
+        }
+        else
+        {
+            rotatedAngle -= step;
+            valve.Rotate(Vector3.forward, step);
         }
     }
+
+    public void StartRotation(int delta)
+    {
+        targetAngle += delta * DegreesPerFlow;
+    }
+
+    public void ReverseRotation(int delta)
+    {
+        targetAngle = Mathf.Max(0f, targetAngle - delta * DegreesPerFlow);
+    }
+
+    public void OnFlowDecreased(int delta) => DecreaseFlow(delta);
 
     public override void IncreaseFlow(int delta)
     {

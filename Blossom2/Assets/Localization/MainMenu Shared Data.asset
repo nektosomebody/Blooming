@@ -79,6 +79,90 @@ MonoBehaviour:
     m_Key: mainMenu.gameName
     m_Metadata:
       m_Items: []
+  - m_Id: 4266036070780928
+    m_Key: auth.confirmButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4288351223484416
+    m_Key: auth.signIn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4288419020214272
+    m_Key: auth.signUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4293613913182208
+    m_Key: changePass.message
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295974178066432
+    m_Key: auth.inputEmail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295975662850048
+    m_Key: auth.inputPassword
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295976614957056
+    m_Key: auth.inputName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4295978703720448
+    m_Key: auth.confirmPassword
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4296514467336192
+    m_Key: auth.forgetPass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4297644979064832
+    m_Key: inputField.enterText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4698009813716992
+    m_Key: free
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702492241235968
+    m_Key: error.UserNotFound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702498037764096
+    m_Key: error.WrongPass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702498675298304
+    m_Key: error.EmailInUse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702499627405312
+    m_Key: error.InvalidEmail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702900292489216
+    m_Key: error.AuthGen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4702903513714688
+    m_Key: error.General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4703020597710848
+    m_Key: error.PasswordMismatch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4762991930707968
+    m_Key: nextButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4763579967934464
+    m_Key: alg2.congrats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4763708531740672
+    m_Key: alg2.score
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

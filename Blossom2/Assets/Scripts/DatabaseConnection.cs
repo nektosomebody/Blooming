@@ -109,6 +109,55 @@ public class DatabaseConnection : MonoBehaviour
         }
     }
 
+    public async Task SaveBestTimeAsync(string uid, string levelType, float seconds)
+    {
+        try
+        {
+            var path = root.Child("users").Child(uid).Child("bestTimes").Child(levelType);
+            var snapshot = await path.GetValueAsync();
+            bool isNewRecord = !snapshot.Exists || seconds < Convert.ToSingle(snapshot.Value);
+            if (isNewRecord)
+                await path.SetValueAsync((double)seconds);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"SaveBestTime failed: {e}");
+            throw;
+        }
+    }
+
+    public async Task<float> LoadBestTimeAsync(string uid, string levelType)
+    {
+        try
+        {
+            var snapshot = await root.Child("users").Child(uid).Child("bestTimes").Child(levelType).GetValueAsync();
+            return snapshot.Exists ? Convert.ToSingle(snapshot.Value) : 0f;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"LoadBestTime failed: {e}");
+            return 0f;
+        }
+    }
+
+    public void SaveBestTime(string uid, string levelType, float seconds, Action onDone = null)
+    {
+        _ = SaveBestTimeAsync(uid, levelType, seconds).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke();
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void LoadBestTime(string uid, string levelType, Action<float> onDone)
+    {
+        _ = LoadBestTimeAsync(uid, levelType).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke(t.Result);
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
     public async Task InitUserProfileAsync(string uid, string username)
     {
         try
@@ -124,5 +173,68 @@ public class DatabaseConnection : MonoBehaviour
             Debug.LogError($"InitUserProfile failed: {e}");
             throw;
         }
+    }
+
+    public void SaveAvatar(string uid, int index, Action onDone = null)
+    {
+        _ = SaveAvatarAsync(uid, index).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke();
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void LoadAvatar(string uid, Action<int> onDone)
+    {
+        _ = LoadAvatarAsync(uid).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke(t.Result);
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void SaveUsername(string uid, string username, Action onDone = null)
+    {
+        _ = SaveUsernameAsync(uid, username).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke();
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void LoadUsername(string uid, Action<string> onDone)
+    {
+        _ = LoadUsernameAsync(uid).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke(t.Result);
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void SaveScore(string uid, string levelType, int score, Action onDone = null)
+    {
+        _ = SaveScoreAsync(uid, levelType, score).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke();
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void LoadScore(string uid, string levelType, Action<int> onDone)
+    {
+        _ = LoadScoreAsync(uid, levelType).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke(t.Result);
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    public void InitUserProfile(string uid, string username, Action onDone = null)
+    {
+        _ = InitUserProfileAsync(uid, username).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Debug.LogError(t.Exception);
+            else onDone?.Invoke();
+        }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 }

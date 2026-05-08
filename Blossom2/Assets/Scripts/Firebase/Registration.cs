@@ -6,12 +6,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public class Registration
+public class Authentication
 {
     FirebaseAuth auth;
     FirebaseUser user;
 
-    public Registration()
+    public Authentication()
     {
         Debug.Log("Setting up Firebase Auth");
         auth = FirebaseAuth.DefaultInstance;
@@ -35,14 +35,8 @@ public class Registration
         }
     }
 
-    /*
-    test user:
-    email = "u@mail.ru";
-    password = "Test123";
-     */
     internal async Task SignInUser(string email, string password)
     {
-
         try
         {
             var task = await auth.SignInWithEmailAndPasswordAsync(email, password);
