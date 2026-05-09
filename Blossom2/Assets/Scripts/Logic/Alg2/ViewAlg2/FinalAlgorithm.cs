@@ -138,7 +138,6 @@ namespace Alg2
         public List<EdgeWithFlow>[] GetEdges()
         {
             return flowCalculator.GetEdges();
-        }
-        
+        }        
     }
 }

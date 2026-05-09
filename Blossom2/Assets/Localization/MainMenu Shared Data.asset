@@ -163,6 +163,26 @@ MonoBehaviour:
     m_Key: alg2.score
     m_Metadata:
       m_Items: []
+  - m_Id: 5727846456168448
+    m_Key: mainMenu.player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5748846560350208
+    m_Key: alg1.pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829240513171456
+    m_Key: alg1.yesButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829328060878848
+    m_Key: alg1.noButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829606961123328
+    m_Key: alg1.wantContinue
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

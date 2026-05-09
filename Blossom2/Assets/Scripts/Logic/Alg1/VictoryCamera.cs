@@ -7,8 +7,6 @@ public class VictoryCamera : MonoBehaviour
     public float radius = 5f;
     public float targetHeight = 200f;
     public float rotationSpeed = 50f;
-    public float dropSpeed = 2f;
-    public float heightSpeed = 2f;
 
     private bool victory = false;
     private float angle = 0f;
@@ -25,7 +23,7 @@ public class VictoryCamera : MonoBehaviour
         angle += rotationSpeed * Time.deltaTime * Mathf.Deg2Rad;
         float x = Mathf.Cos(angle) * radius;
         float z = Mathf.Sin(angle) * radius;
-        transform.position = new Vector3(target.position.x + x, transform.position.y, target.position.z + z);
+        transform.position = new Vector3(target.position.x + x, targetHeight, target.position.z + z);
 
         transform.LookAt(target.transform.position);
     }

@@ -25,9 +25,25 @@ public class CameraFitter : MonoBehaviour
         {
             size = width / screenRatio / 2f;
         }
-
         cam.orthographicSize = size + padding;
         transform.position = new Vector3(center.x, size + padding, center.z);
+        
+        /*
+        float aspect = (float)Screen.width / Screen.height;
+        float halfFov = cam.fieldOfView * 0.5f * Mathf.Deg2Rad;
+
+        float halfW = width / 2f + padding;
+        float halfH = height / 2f + padding;
+
+        float distForHeight = halfH / Mathf.Tan(halfFov);
+        float distForWidth = halfW / aspect / Mathf.Tan(halfFov);
+
+        float dist = Mathf.Max(distForHeight, distForWidth);
+
+        Debug.LogWarning($"Distance: {dist}, y = {center.y}, padding = {padding}");
+        transform.position = new Vector3(center.x, dist + padding, center.z);
+        transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        */
     }
 
     public void FitCamera(Transform target)

@@ -37,15 +37,14 @@ public class Spawner1 : MonoBehaviour
                 //if (graph[j][k].isRotateAble) { obj = Instantiate(rotateAbleVert, pos, Quaternion.identity); }
                 //else { obj = Instantiate(notRotateAbleVert, pos, Quaternion.identity); }
 
-                VertexView1 tmp = obj.GetComponent<VertexView1>();
+                VertexView1 vertexView = obj.GetComponent<VertexView1>();
                 if (graph[j][k].isRotateAble)
                 {
                     // subscribing to an event to verify that the graph is connected again
-                    tmp.ClickedEvent += levelData.CheckIfWin; 
-                    levelData.playerWon += tmp.Rotate;
-                    levelData.playerWon += tmp.PlayBloomingAnimation;
+                    vertexView.ClickedEvent += levelData.CheckIfWin; 
+                    levelData.playerWon += vertexView.LevelFinished;
                 }
-                tmp.Init(graph[j][k]);
+                vertexView.Init(graph[j][k]);
             }
         }
     }

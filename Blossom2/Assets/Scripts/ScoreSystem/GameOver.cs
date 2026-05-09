@@ -8,18 +8,21 @@ using UnityEngine.SceneManagement;
 public class GameOver : MonoBehaviour
 {
     [SerializeField] TMP_Text totalBest;
-    [SerializeField] LevelData levelData;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] string levelType = "alg1";
-    [SerializeField] ScoreCalculator scoreCalculator;
+    LevelData levelData;
+    ScoreCalculator scoreCalculator;
     private float delay = 6f;
 
     TimerUI timer;
 
     void Start()
     {
-        levelData.playerWon += OnPlayerWon;
+        levelData = GetComponent<LevelData>();
+        scoreCalculator = GetComponent<ScoreCalculator>();
         timer = GetComponent<TimerUI>();
+
+        levelData.playerWon += OnPlayerWon;
     }
 
     public void OnPlayerWon(object sender, EventArgs e)

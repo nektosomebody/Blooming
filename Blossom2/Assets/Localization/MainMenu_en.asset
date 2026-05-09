@@ -166,6 +166,26 @@ MonoBehaviour:
     m_Localized: 'Your score: '
     m_Metadata:
       m_Items: []
+  - m_Id: 5727846456168448
+    m_Localized: Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5748846560350208
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829240513171456
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829328060878848
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5829606961123328
+    m_Localized: Do you want to continue?
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

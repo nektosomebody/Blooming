@@ -7,24 +7,44 @@ using UnityEngine;
 
 public class LevelData : MonoBehaviour
 {
-    LevelCreator creator;
-    public int rows = 5;
-    public int cols = 5;
-    Bounds bounds;
     [SerializeField] GameObject segment;
+    [SerializeField] int initialSize = 2;
+    [SerializeField] int delta = 3;
+
+    LevelCreator creator;
+    public int rows;
+    public int cols;
+    Bounds bounds;
+    TimerUI timer;
     public EventHandler playerWon;
     public List<List<Vertex>> Graph { get; private set; }
+    const string LevelsKey = "alg1_levels_completed";
 
     void Awake()
     {
+        int completed = PlayerPrefs.GetInt(LevelsKey, 0);
+        rows = cols = ComputeSize(completed);
         creator = new LevelCreator(rows, cols);
-        
         Graph = creator.ReturnCompleteLevel();
 
         bounds = GetWindowSize();
     }
+
+    int ComputeSize(int completed)
+    {
+        int size = initialSize;
+        int threshold = delta;
+        while (completed >= threshold)
+        {
+            size++;
+            completed -= threshold;
+            threshold *= 2;
+        }
+        return size;
+    }
     private void Start()
     {
+        timer = GetComponent<TimerUI>();
         var segmentInstance = segment.GetComponentInChildren<MatchSegmentWithLevel>();
         segmentInstance.ResizeFloor(bounds);
 
@@ -45,6 +65,9 @@ public class LevelData : MonoBehaviour
             if (res == 0)
             {
                 Debug.Log("You've won!");
+                PlayerPrefs.SetInt(LevelsKey, PlayerPrefs.GetInt(LevelsKey, 0) + 1);
+                PlayerPrefs.Save();
+                timer?.StopTimer();
                 playerWon?.Invoke(this, EventArgs.Empty);
                 Camera.main.GetComponent<VictoryCamera>().OnPlayerWon();
             }

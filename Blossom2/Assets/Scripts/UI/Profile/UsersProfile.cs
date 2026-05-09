@@ -1,12 +1,13 @@
 using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
+using System;
 
 public class UsersProfile : MonoBehaviour
 {
     [SerializeField] GameObject currAvatar;
-    [SerializeField] GameObject dialogWnd;
     [SerializeField] GameObject changeAvatarWnd;
+    [SerializeField] GameObject userAvatar;
     DatabaseConnection db;
     bool isLoggedIn;
     FirebaseAuth auth;
@@ -18,18 +19,27 @@ public class UsersProfile : MonoBehaviour
         auth = FirebaseAuth.DefaultInstance;
         avatarChanger = changeAvatarWnd.GetComponent<AvatarChanger>();
         auth.StateChanged += (s, e) => isLoggedIn = auth.CurrentUser != null;
-        
+
     }
     public void OnClicked()
-    {        
+    {
         if (isLoggedIn)
         {
             Debug.Log($"{auth.CurrentUser} {auth.CurrentUser.DisplayName} {auth.CurrentUser.UserId}");
-            db.LoadAvatar(auth.CurrentUser.UserId, index =>
+            try
+            {
+                db.LoadAvatar(auth.CurrentUser.UserId, index =>
             {
                 avatarChanger.Init(auth.CurrentUser.DisplayName, index);
                 ShowChangeAvatarWnd();
             });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error loading avatar: {ex.Message}");
+            }
+            
+            avatarChanger.onAvatarChanged.RemoveListener(AvatarChanged);
             avatarChanger.onAvatarChanged.AddListener(AvatarChanged);
         }
         else
@@ -53,8 +63,17 @@ public class UsersProfile : MonoBehaviour
 
     private void ShowChangeAvatarWnd()
     {
-        GetComponent<Renderer>().enabled = false;
-        changeAvatarWnd.SetActive(true);
+        try
+        {
+            userAvatar.SetActive(false);
+            changeAvatarWnd.SetActive(true);
+            Debug.Log("Show change avatar window");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error showing change avatar window: {ex.Message}");
+        }
+        
     }
     void OnDestroy()
     {

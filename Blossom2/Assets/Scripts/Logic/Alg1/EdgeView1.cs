@@ -23,7 +23,7 @@ public class EdgeView1 : MonoBehaviour
             UpdateEdge();
 
             if (t <= 0f)
-            { 
+            {
                 shrinkEdge = false;
                 increaseEdge = true;
                 UpdateVertexes();
@@ -74,13 +74,13 @@ public class EdgeView1 : MonoBehaviour
 
         UpdateVertexes();
         fullLength = Vector3.Distance(start, end);
-        
+
         UpdateEdge();
     }
 
     private void RotateEdge(object sender, EventArgs e)
     {
-        shrinkEdge = true;     
+        shrinkEdge = true;
         return;
     }
 

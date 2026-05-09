@@ -67,7 +67,7 @@ public class Spawner2: MonoBehaviour
         var all_edges = flowAlg.GetEdges();
         /*
         because all_vertexes contains all the vertices that are on the field, 
-        and all_edges also includes 2 additional ones for the algorithm to work correctly.
+        and all_edges also includes 2 additional ones for the algorithm to work correctly
         */
         for (int i = 0; i < all_vertices.Count; i++)
         {

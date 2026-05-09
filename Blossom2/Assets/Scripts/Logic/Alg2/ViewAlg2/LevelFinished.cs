@@ -13,6 +13,8 @@ public class LevelFinished : MonoBehaviour
 
     void OnWin()
     {
+        timer.StopTimer();
+
         if (scoreCalculator != null && timer != null)
             scoreCalculator.CalculateAndSave(timer.totalSeconds);
 
