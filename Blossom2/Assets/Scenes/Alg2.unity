@@ -3258,9 +3258,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c4cdea8ab759a34ea78ea04ae42ccca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreCalculator: {fileID: 0}
+  scoreCalculator: {fileID: 1779667823}
   timer: {fileID: 594977656}
-  victoryPanel: {fileID: 0}
+  victoryPanel: {fileID: 1495258161}
 --- !u!1001 &1852311294
 PrefabInstance:
   m_ObjectHideFlags: 0

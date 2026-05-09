@@ -14,6 +14,7 @@ public class EdgeWithFlowView : MonoBehaviour
     public Vector3 labelSpacing = new Vector3(0f, 20f, 10f);
     EdgeWithFlow edge;
     MiddleVertexView startMiddleVertex;
+    MiddleVertexView targetMiddleVertex;
     public event Action<int> FlowIncreased;
     public event Action<int> FlowDecreased;
     public int Capacity { get; private set; }
@@ -45,6 +46,11 @@ public class EdgeWithFlowView : MonoBehaviour
         if (flowLabel != null)
             flowLabel.text = $"0/{Capacity}";
 
+    }
+
+    public void SetTargetVertex(VertexViewParent target)
+    {
+        targetMiddleVertex = target as MiddleVertexView;
     }
 
     private void OnMouseDown()
@@ -97,6 +103,7 @@ public class EdgeWithFlowView : MonoBehaviour
             }
             Debug.Log($"try to decrease flow from {startMiddleVertex?.Ind}");
             startMiddleVertex?.DecreaseFlow(delta);
+            targetMiddleVertex?.OnOutgoingFlowChanged(oldFlow, CurFlow);
             UpdateFlowVisual();
             FlowIncreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.StartRotation(delta);
@@ -110,7 +117,9 @@ public class EdgeWithFlowView : MonoBehaviour
         int delta = oldFlow - CurFlow;
         if (delta > 0)
         {
+            Debug.Log($"start: {startMiddleVertex?.Ind} end {targetMiddleVertex?.Ind} decrease flow by {delta}");
             startMiddleVertex?.IncreaseFlow(delta);
+            targetMiddleVertex?.OnIncomingFlowChanged(oldFlow, CurFlow);
             UpdateFlowVisual();
             FlowDecreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.ReverseRotation(delta);
@@ -129,6 +138,10 @@ public class EdgeWithFlowView : MonoBehaviour
                                             (edgeLength * normalized / 2f);
         if (flowLabel != null)
             flowLabel.text = $"{CurFlow}/{Capacity}";
+    }
+    public void ResetCurFlow(object sender, EventArgs e)
+    {
+        DecreaseFlow(CurFlow);
     }
 
     public void ResetFlow(object sender, EventArgs e)

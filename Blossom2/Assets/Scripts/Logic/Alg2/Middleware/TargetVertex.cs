@@ -19,13 +19,15 @@ public class TargetVertex : VertexViewParent
         FlowChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public override bool DecreaseFlow(int delta)
+    public override void DecreaseFlow(int delta)
     {
         if (CurFlow >= delta)
         {
             CurFlow -= delta;
-            return true;
-        }
-        return false;
+        } 
+        else
+        {
+            CurFlow = 0;
+        }       
     }
 }

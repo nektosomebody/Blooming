@@ -11,5 +11,5 @@ public class SourceVertexView : VertexViewParent
 
     public override void IncreaseFlow(int delta) { }
 
-    public override bool DecreaseFlow(int delta) => true;
+    public override void DecreaseFlow(int delta) { }
 }

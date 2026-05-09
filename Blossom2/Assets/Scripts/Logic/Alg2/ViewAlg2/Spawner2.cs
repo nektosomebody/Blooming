@@ -71,6 +71,7 @@ public class Spawner2: MonoBehaviour
         because all_vertexes contains all the vertices that are on the field, 
         and all_edges also includes 2 additional ones for the algorithm to work correctly
         */
+        
         for (int i = 0; i < all_vertices.Count; i++)
         {
             Vertex from = all_vertices[i];
@@ -96,16 +97,20 @@ public class Spawner2: MonoBehaviour
                 scale.z = length;
                 obj.transform.localScale = scale;
 
-                EdgeWithFlowView view = obj.GetComponent<EdgeWithFlowView>();
+                EdgeWithFlowView edgeView = obj.GetComponent<EdgeWithFlowView>();
                 // important to set lenght after changing the scale
-                Debug.Log($"{obj.transform.localScale} {length}");
-                view.Init(edgeDomain, length, flow, vertexViewMap[from.ind], posFrom, posTo);
-                flowAlg.cleanFlowEvent += view.ResetFlow;
+                // Debug.Log($"{obj.transform.localScale} {length}");
+                edgeView.Init(edgeDomain, length, flow, vertexViewMap[from.ind], posFrom, posTo);
+                flowAlg.cleanFlowEvent += edgeView.ResetFlow;
                 if (vertexViewMap.TryGetValue(edgeDomain.To.ind, out var toView))
                 {
-                    view.FlowIncreased += toView.IncreaseFlow;
-                    if (toView is MiddleVertexView middleToView)
-                        view.FlowDecreased += middleToView.OnFlowDecreased;
+                    edgeView.SetTargetVertex(toView);
+                    edgeView.FlowIncreased += toView.IncreaseFlow;
+                    edgeView.FlowDecreased += toView.DecreaseFlow;
+                    if (vertexViewMap[from.ind] is MiddleVertexView midView)
+                    {
+                        midView.RegisterOutgoingEdge(edgeView);
+                    }
                 }
             }
         }

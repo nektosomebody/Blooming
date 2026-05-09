@@ -1,6 +1,8 @@
 using UnityEngine;
 using Alg2.Domains;
 using TMPro;
+using System;
+using System.Collections.Generic;
 
 public class MiddleVertexView : VertexViewParent
 {
@@ -10,6 +12,7 @@ public class MiddleVertexView : VertexViewParent
     public float DegreesPerFrame = 1f;
     TMP_Text flowLabel;
     public int Capacity { get; private set; }
+    public event EventHandler MidFlowDecreased;
     private Color originalColor;
     private float originalFontSize;
     private const float OverloadedFontSize = 120f;
@@ -18,7 +21,9 @@ public class MiddleVertexView : VertexViewParent
     float targetAngle = 0f;
     float rotatedAngle = 0f;
 
-
+    private int totalIncomingFlow = 0;
+    private int totalOutgoingFlow = 0;
+    private List<EdgeWithFlowView> outgoingEdges = new();
 
     public override void Init(Vertex v, int capacity)
     {
@@ -63,7 +68,57 @@ public class MiddleVertexView : VertexViewParent
         targetAngle = Mathf.Max(0f, targetAngle - delta * DegreesPerFlow);
     }
 
-    public void OnFlowDecreased(int delta) => DecreaseFlow(delta);
+    public void RegisterOutgoingEdge(EdgeWithFlowView edge)
+    {
+        outgoingEdges.Add(edge);
+    }
+
+    public void OnIncomingFlowChanged(int oldFlow, int newFlow)
+    {
+        totalIncomingFlow += (newFlow - oldFlow);
+        Debug.Log($"Vertex {ind}: incoming flow changed from {oldFlow} to {newFlow}, total: {totalIncomingFlow}");
+        EnforceFlowConservation();
+    }
+
+    private void EnforceFlowConservation()
+    {
+        if (totalOutgoingFlow > totalIncomingFlow)
+        {
+            int excess = totalOutgoingFlow - totalIncomingFlow;
+            Debug.Log($"Vertex {ind}: enforcing conservation, excess: {excess}");
+            CascadeDecreaseOutgoing(excess);
+        }
+    }
+
+    private void CascadeDecreaseOutgoing(int excess)
+    {
+        if (outgoingEdges.Count == 0) return;
+
+        int stillNeedToDecrease = excess;
+
+        foreach (var edge in outgoingEdges)
+        {
+            if (stillNeedToDecrease <= 0) break;
+
+            int canDecreaseFromThisEdge = edge.CurFlow;
+            int decreaseAmount = Mathf.Min(stillNeedToDecrease, canDecreaseFromThisEdge);
+
+            if (decreaseAmount > 0)
+            {
+                edge.ResetCurFlow(null, EventArgs.Empty);
+                stillNeedToDecrease -= decreaseAmount;
+                totalOutgoingFlow -= decreaseAmount;
+            }
+        }
+
+        Debug.Log($"Vertex {ind}: cascaded {excess - stillNeedToDecrease} units, remaining: {stillNeedToDecrease}");
+    }
+
+    public void OnOutgoingFlowChanged(int oldFlow, int newFlow)
+    {
+        totalOutgoingFlow += (newFlow - oldFlow);
+        Debug.Log($"Vertex {ind}: outgoing flow changed, total: {totalOutgoingFlow}");
+    }
 
     public override void IncreaseFlow(int delta)
     {
@@ -71,15 +126,18 @@ public class MiddleVertexView : VertexViewParent
         UpdateLabel();
     }
 
-    public override bool DecreaseFlow(int delta)
+    public override void DecreaseFlow(int delta)
     {
         if (CurFlow >= delta)
         {
-            CurFlow -= delta;
-            UpdateLabel();
-            return true;
+            CurFlow -= delta;  
         }
-        return false;
+        else
+        {
+            CurFlow = 0;
+        }
+        UpdateLabel();
+        MidFlowDecreased?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateLabel()
