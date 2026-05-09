@@ -842,7 +842,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5409297674958195446, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
   m_PrefabInstance: {fileID: 2069135987}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2069135988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -1588,11 +1588,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1252201626}
   - component: {fileID: 1252201625}
-  - component: {fileID: 1252201627}
   - component: {fileID: 1252201628}
   - component: {fileID: 1252201629}
-  - component: {fileID: 1252201630}
   - component: {fileID: 1252201631}
+  - component: {fileID: 1252201627}
   m_Layer: 0
   m_Name: LevelHolder
   m_TagString: Untagged
@@ -1645,6 +1644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 1282884410}
+  timer: {fileID: 2069135989}
 --- !u!114 &1252201628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1674,20 +1674,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   optimalTime: 60
   multiplier: 1000
-  levelType: alg1
---- !u!114 &1252201630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252201624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 214ab7d3795b7354eb228180f732df72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 691643951}
 --- !u!114 &1252201631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1703,6 +1689,8 @@ MonoBehaviour:
   totalBest: {fileID: 1919479376}
   gameOverPanel: {fileID: 1452639695}
   levelType: alg1
+  levelData: {fileID: 1252201625}
+  timer: {fileID: 2069135989}
 --- !u!1 &1282884410
 GameObject:
   m_ObjectHideFlags: 0
@@ -2699,7 +2687,7 @@ MonoBehaviour:
 
     Best time:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2147374, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2763,7 +2751,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1919479377
@@ -2864,7 +2852,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5409297674958195446, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
       propertyPath: m_text
-      value: 'Time:'
+      value: ' '
       objectReference: {fileID: 0}
     - target: {fileID: 5409297674958195446, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
       propertyPath: m_fontSize
@@ -2890,8 +2878,29 @@ PrefabInstance:
     - {fileID: 1893524520865048071, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8714141963932754453, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 2069135989}
   m_SourcePrefab: {fileID: 100100000, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
+--- !u!1 &2069135988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8714141963932754453, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}
+  m_PrefabInstance: {fileID: 2069135987}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2069135989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069135988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 214ab7d3795b7354eb228180f732df72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 691643951}
 --- !u!224 &2126311585 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3695950261070804075, guid: 5c12e843a35f78b4292e8c7cba7c9898, type: 3}

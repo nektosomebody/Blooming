@@ -9,12 +9,12 @@ public class EdgeWithFlowView : MonoBehaviour
 {
     [SerializeField] GameObject labelPrefab;
     TMP_Text flowLabel;
-    // need to make tmp upper than tube
+    // need to make tmp upper than tube and flow
     public Vector3 flowSpacing = new Vector3(0f, 10f, 0f);
     public Vector3 labelSpacing = new Vector3(0f, 20f, 10f);
     EdgeWithFlow edge;
     MiddleVertexView startMiddleVertex;
-    public event Action<int> FlowChanged;
+    public event Action<int> FlowIncreased;
     public event Action<int> FlowDecreased;
     public int Capacity { get; private set; }
     public int CurFlow { get; private set; }
@@ -26,7 +26,7 @@ public class EdgeWithFlowView : MonoBehaviour
     Vector3 posFrom;
     Vector3 posTo;
 
-    const float SwipeThreshold = 15f;
+    const float SwipeThreshold = 30f;
 
     public void Init(EdgeWithFlow e, float edgeLen, GameObject flInstance, VertexViewParent startVertex, Vector3 from, Vector3 to)
     {
@@ -40,11 +40,11 @@ public class EdgeWithFlowView : MonoBehaviour
         posFrom = from;
         posTo = to;
 
-            GameObject labelObj = Instantiate(labelPrefab, transform.position + labelSpacing, Quaternion.Euler(90f, 0f, 0f));
-            flowLabel = labelObj.GetComponent<TMP_Text>();
-            if (flowLabel != null)
-                flowLabel.text = $"0/{Capacity}";
-        
+        GameObject labelObj = Instantiate(labelPrefab, transform.position + labelSpacing, Quaternion.Euler(90f, 0f, 0f));
+        flowLabel = labelObj.GetComponent<TMP_Text>();
+        if (flowLabel != null)
+            flowLabel.text = $"0/{Capacity}";
+
     }
 
     private void OnMouseDown()
@@ -60,30 +60,45 @@ public class EdgeWithFlowView : MonoBehaviour
         isSwiping = false;
 
         Vector2 screenFrom = Camera.main.WorldToScreenPoint(posFrom);
-        Vector2 screenTo   = Camera.main.WorldToScreenPoint(posTo);
-        Vector2 edgeDir    = (screenTo - screenFrom).normalized;
+        Vector2 screenTo = Camera.main.WorldToScreenPoint(posTo);
+        Vector2 edgeDir = (screenTo - screenFrom).normalized;
 
-        Vector2 swipeVec  = (Vector2)Input.mousePosition - swipeStart;
-        float projection  = Vector2.Dot(swipeVec, edgeDir);
+        Vector2 swipeVec = (Vector2)Input.mousePosition - swipeStart;
+        float projection = Vector2.Dot(swipeVec, edgeDir);
 
         int units = (int)(Mathf.Abs(projection) / SwipeThreshold);
         if (units == 0) return;
 
         if (projection > 0)
+        {
+            Debug.Log("Increasing flow");
             IncreaseFlow(units);
+        }
         else
+        {
             DecreaseFlow(units);
+        }
     }
 
     private void IncreaseFlow(int multi)
     {
+        int availableFlow = startMiddleVertex != null ? startMiddleVertex.CurFlow : int.MaxValue;
         int oldFlow = CurFlow;
         CurFlow = Mathf.Clamp(CurFlow + multi, 0, Capacity);
+        CurFlow = Mathf.Min(CurFlow, availableFlow);
         int delta = CurFlow - oldFlow;
         if (delta > 0)
         {
+            if (startMiddleVertex != null && startMiddleVertex.VertexIsOverloaded())
+            {
+                Debug.Log("Cannot increase flow, vertex is overloaded");
+                CurFlow = oldFlow; // revert to old flow
+                return;
+            }
+            Debug.Log($"try to decrease flow from {startMiddleVertex?.Ind}");
+            startMiddleVertex?.DecreaseFlow(delta);
             UpdateFlowVisual();
-            FlowChanged?.Invoke(delta);
+            FlowIncreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.StartRotation(delta);
         }
     }
@@ -95,6 +110,7 @@ public class EdgeWithFlowView : MonoBehaviour
         int delta = oldFlow - CurFlow;
         if (delta > 0)
         {
+            startMiddleVertex?.IncreaseFlow(delta);
             UpdateFlowVisual();
             FlowDecreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.ReverseRotation(delta);
@@ -118,9 +134,5 @@ public class EdgeWithFlowView : MonoBehaviour
     public void ResetFlow(object sender, EventArgs e)
     {
         edge.ResetFlow();
-    }
-    public void IncreaseFlowAmount(int delta)
-    {
-        CurFlow = (CurFlow + delta) % Capacity;
     }
 }

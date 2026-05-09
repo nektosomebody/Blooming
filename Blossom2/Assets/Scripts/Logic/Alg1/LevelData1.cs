@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 
-public class LevelData : MonoBehaviour
+public class LevelData1 : LevelData
 {
     [SerializeField] GameObject segment;
     [SerializeField] int initialSize = 2;
@@ -15,8 +15,6 @@ public class LevelData : MonoBehaviour
     public int rows;
     public int cols;
     Bounds bounds;
-    TimerUI timer;
-    public EventHandler playerWon;
     public List<List<Vertex>> Graph { get; private set; }
     const string LevelsKey = "alg1_levels_completed";
 
@@ -44,7 +42,6 @@ public class LevelData : MonoBehaviour
     }
     private void Start()
     {
-        timer = GetComponent<TimerUI>();
         var segmentInstance = segment.GetComponentInChildren<MatchSegmentWithLevel>();
         segmentInstance.ResizeFloor(bounds);
 
@@ -67,8 +64,8 @@ public class LevelData : MonoBehaviour
                 Debug.Log("You've won!");
                 PlayerPrefs.SetInt(LevelsKey, PlayerPrefs.GetInt(LevelsKey, 0) + 1);
                 PlayerPrefs.Save();
-                timer?.StopTimer();
-                playerWon?.Invoke(this, EventArgs.Empty);
+                
+                RaisePlayerWon();
                 Camera.main.GetComponent<VictoryCamera>().OnPlayerWon();
             }
         }

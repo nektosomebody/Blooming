@@ -186,6 +186,22 @@ MonoBehaviour:
     m_Localized: Do you want to continue?
     m_Metadata:
       m_Items: []
+  - m_Id: 5857820450295808
+    m_Localized: Blooming glade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5857884417626112
+    m_Localized: Restore the connection between the flowers!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5858000054587392
+    m_Localized: Funny stream
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5858060158963712
+    m_Localized: Open the way for the largest flow!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

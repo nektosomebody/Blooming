@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class LevelFinished : MonoBehaviour
@@ -8,15 +9,15 @@ public class LevelFinished : MonoBehaviour
 
     public void Init(LevelResultManager manager)
     {
-        manager.OnWin += OnWin;
+        manager.playerWon += OnWin;
     }
 
-    void OnWin()
+    void OnWin(object s, EventArgs args)
     {
         timer.StopTimer();
 
         if (scoreCalculator != null && timer != null)
-            scoreCalculator.CalculateAndSave(timer.totalSeconds);
+            scoreCalculator.CalculateScore(timer.totalSeconds);
 
         if (victoryPanel != null)
             victoryPanel.SetActive(true);

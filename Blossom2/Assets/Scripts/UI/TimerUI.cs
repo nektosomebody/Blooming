@@ -11,13 +11,14 @@ public class TimerUI : MonoBehaviour
     public void StopTimer()
     {
         timerIsActive = false;
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
+        Debug.Log($"Timer stopped at {totalSeconds} seconds.");
     }
 
     public void ContinueTimer()
     {
         timerIsActive = true;
-        Time.timeScale = 1f;
+        // Time.timeScale = 1f;
     }
 
     void Update()

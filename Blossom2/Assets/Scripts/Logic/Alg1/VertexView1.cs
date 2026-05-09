@@ -52,6 +52,8 @@ public class VertexView1 : MonoBehaviour
 
     public void LevelFinished(object sender, EventArgs e)
     {
+        Debug.Log("Level finished, vertex " + vertex.ind.ToString() + " is blooming!");
+        
         isRotating = true;
         GetComponentInChildren<Animator>().Play(BloomingHash);
         if (ground != null) ground.SetActive(false);

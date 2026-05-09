@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Spawner1 : MonoBehaviour
 {
-    LevelData levelData;
+    LevelData1 levelData;
     public GameObject rotateAbleVert;
     // public GameObject notRotateAbleVert;
     public float spacing = 1.5f;
@@ -16,7 +16,7 @@ public class Spawner1 : MonoBehaviour
 
     void Start()
     {
-        levelData = GetComponent<LevelData>();
+        levelData = GetComponent<LevelData1>();
         graph = levelData.Graph;
         SpawnGrid();
     }

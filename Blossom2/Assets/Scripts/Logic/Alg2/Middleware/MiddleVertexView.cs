@@ -10,11 +10,15 @@ public class MiddleVertexView : VertexViewParent
     public float DegreesPerFrame = 1f;
     TMP_Text flowLabel;
     public int Capacity { get; private set; }
+    private Color originalColor;
+    private float originalFontSize;
+    private const float OverloadedFontSize = 120f;
+    private static readonly Color OverloadedColor = new Color(1, 0, 0, 1);
 
     float targetAngle = 0f;
     float rotatedAngle = 0f;
 
-    
+
 
     public override void Init(Vertex v, int capacity)
     {
@@ -25,7 +29,11 @@ public class MiddleVertexView : VertexViewParent
 
         flowLabel = labelObj.GetComponent<TMP_Text>();
         if (flowLabel != null)
+        {
             flowLabel.text = $"0/{Capacity}";
+            originalColor = flowLabel.color;
+            originalFontSize = flowLabel.fontSize;
+        }
     }
 
     void Update()
@@ -61,8 +69,6 @@ public class MiddleVertexView : VertexViewParent
     {
         CurFlow += delta;
         UpdateLabel();
-        if (CurFlow > Capacity)
-            Debug.Log($"Vertex {ind} overloaded: {CurFlow}/{Capacity}");
     }
 
     public override bool DecreaseFlow(int delta)
@@ -79,6 +85,25 @@ public class MiddleVertexView : VertexViewParent
     private void UpdateLabel()
     {
         if (flowLabel != null)
+        {
             flowLabel.text = $"{CurFlow}/{Capacity}";
+            if (VertexIsOverloaded())
+            {
+                flowLabel.color = OverloadedColor;
+                flowLabel.fontSize = OverloadedFontSize;
+                Debug.Log($"Vertex {ind} overloaded: {CurFlow}/{Capacity}");
+            }
+            else
+            {
+                flowLabel.color = originalColor;
+                flowLabel.fontSize = originalFontSize;
+            }
+        }
+
+
+    }
+    public bool VertexIsOverloaded()
+    {
+        return CurFlow > Capacity;
     }
 }

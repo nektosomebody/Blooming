@@ -183,6 +183,22 @@ MonoBehaviour:
     m_Key: alg1.wantContinue
     m_Metadata:
       m_Items: []
+  - m_Id: 5857820450295808
+    m_Key: alg1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5857884417626112
+    m_Key: alg1.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5858000054587392
+    m_Key: alg2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5858060158963712
+    m_Key: alg2.description
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

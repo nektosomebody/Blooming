@@ -10,26 +10,25 @@ public class GameOver : MonoBehaviour
     [SerializeField] TMP_Text totalBest;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] string levelType = "alg1";
-    LevelData levelData;
+    [SerializeField] LevelData levelData;
+    [SerializeField] TimerUI timer;
     ScoreCalculator scoreCalculator;
     private float delay = 6f;
 
-    TimerUI timer;
+    
 
     void Start()
     {
-        levelData = GetComponent<LevelData>();
         scoreCalculator = GetComponent<ScoreCalculator>();
-        timer = GetComponent<TimerUI>();
-
         levelData.playerWon += OnPlayerWon;
     }
 
     public void OnPlayerWon(object sender, EventArgs e)
     {
+        timer.StopTimer();
         float current = Mathf.Round(timer.totalSeconds * 100f) / 100f;
 
-        int score = scoreCalculator != null ? scoreCalculator.CalculateAndSave(current) : 0;
+        int score = scoreCalculator != null ? scoreCalculator.CalculateScore(current) : 0;
 
         string uid = FirebaseAuth.DefaultInstance.CurrentUser?.UserId;
         if (uid == null || DatabaseConnection.Instance == null)
@@ -56,5 +55,5 @@ public class GameOver : MonoBehaviour
     }
 
     public void ToQuit() => SceneManager.LoadScene("MainMenu");
-    public void ToContinue() => SceneManager.LoadScene("Game");
+    public void ToContinue() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }

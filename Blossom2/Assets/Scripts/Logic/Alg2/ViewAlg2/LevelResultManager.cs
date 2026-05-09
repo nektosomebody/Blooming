@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
-public class LevelResultManager
+public class LevelResultManager : LevelData
 {
-    public event Action OnWin;
-
     HashSet<TargetVertex> targetVertices = new();
     HashSet<MiddleVertexView> middleVertices = new();
     int _maxFlow;
@@ -33,11 +32,12 @@ public class LevelResultManager
     void CheckIfWin(object sender, EventArgs e)
     {
         int totalFlow = targetVertices.Sum(v => v.FlowAmount);
+        Debug.Log($"Total flow: {totalFlow}, Max flow: {MaxFlow}");
+        
         if (totalFlow < MaxFlow) return;
-
         bool anyOverloaded = middleVertices.Any(m => m.CurFlow > m.Capacity);
         if (anyOverloaded) return;
 
-        OnWin?.Invoke();
+        RaisePlayerWon();
     }
 }

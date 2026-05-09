@@ -19,11 +19,12 @@ public class Spawner2: MonoBehaviour
     [SerializeField] float yPos = 0f;
     [SerializeField] int minVertexCapacity = 5;
     [SerializeField] int maxVertexCapacity = 20;
-    LevelResultManager resultManager = new();
+    LevelResultManager resultManager;
     FinalAlgorithm flowAlg;
     private void Start()
     {
         flowAlg = GetComponent<FinalAlgorithm>();
+        resultManager = GetComponent<LevelResultManager>();
         SpawnLevel();       
     }
     private void SpawnLevel()
@@ -34,6 +35,7 @@ public class Spawner2: MonoBehaviour
         HashSet<TargetVertex> targetVertices = new();
         HashSet<MiddleVertexView> middleVertices = new();
         Dictionary<int, VertexViewParent> vertexViewMap = new();
+        
         // instantiate vertices
         foreach (Vertex vertDomain in all_vertices)
         {
@@ -101,7 +103,7 @@ public class Spawner2: MonoBehaviour
                 flowAlg.cleanFlowEvent += view.ResetFlow;
                 if (vertexViewMap.TryGetValue(edgeDomain.To.ind, out var toView))
                 {
-                    view.FlowChanged += toView.IncreaseFlow;
+                    view.FlowIncreased += toView.IncreaseFlow;
                     if (toView is MiddleVertexView middleToView)
                         view.FlowDecreased += middleToView.OnFlowDecreased;
                 }
