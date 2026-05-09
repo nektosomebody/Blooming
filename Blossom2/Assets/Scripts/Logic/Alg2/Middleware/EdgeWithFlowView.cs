@@ -8,6 +8,7 @@ using TMPro;
 public class EdgeWithFlowView : MonoBehaviour
 {
     [SerializeField] GameObject labelPrefab;
+    [SerializeField] float SwipeThreshold = 30f;
     TMP_Text flowLabel;
     // need to make tmp upper than tube and flow
     public Vector3 flowSpacing = new Vector3(0f, 10f, 0f);
@@ -27,7 +28,7 @@ public class EdgeWithFlowView : MonoBehaviour
     Vector3 posFrom;
     Vector3 posTo;
 
-    const float SwipeThreshold = 30f;
+    
 
     public void Init(EdgeWithFlow e, float edgeLen, GameObject flInstance, VertexViewParent startVertex, Vector3 from, Vector3 to)
     {
