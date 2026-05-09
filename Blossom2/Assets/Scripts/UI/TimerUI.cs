@@ -25,7 +25,7 @@ public class TimerUI : MonoBehaviour
     {
         totalSeconds = 0f;
         timerIsActive = true;
-        text.text = "Time:\r\n00:00";
+        text.text = "00:00";
         Debug.Log("Timer reset");
     }
 
@@ -36,6 +36,6 @@ public class TimerUI : MonoBehaviour
         totalSeconds += Time.deltaTime;
         int minutes = Mathf.FloorToInt(totalSeconds / 60);
         int seconds = Mathf.FloorToInt(totalSeconds % 60);
-        text.text = $"Time:\r\n{minutes:00}:{seconds:00}";
+        text.text = $"{minutes:00}:{seconds:00}";
     }
 }

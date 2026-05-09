@@ -84,9 +84,11 @@ public class DatabaseConnection : MonoBehaviour
             var path = root.Child("users").Child(uid).Child("scores").Child(levelType);
             var snapshot = await path.GetValueAsync();
 
-            bool isNewRecord = !snapshot.Exists || score > Convert.ToInt32(snapshot.Value);
-            if (isNewRecord)
-                await path.SetValueAsync(score);
+            int currentTotal = snapshot.Exists ? Convert.ToInt32(snapshot.Value) : 0;
+            int newTotal = currentTotal + score;
+            await path.SetValueAsync(newTotal);
+
+            Debug.Log($"[Score] {levelType}: +{score} (Total: {newTotal})");
         }
         catch (Exception e)
         {
@@ -165,7 +167,7 @@ public class DatabaseConnection : MonoBehaviour
             await root.Child("users").Child(uid).SetValueAsync(new System.Collections.Generic.Dictionary<string, object>
             {
                 { "username",    username },
-                { "avatarIndex", 0        }
+                // { "avatarIndex", 0        }
             });
         }
         catch (Exception e)

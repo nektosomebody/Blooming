@@ -58,14 +58,11 @@ android {
         ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
     }**PACKAGING_OPTIONS**
 }
+
+android {
+    compileSdkVersion 34
+}
+
 **IL_CPP_BUILD_SETUP**
 **SOURCE_BUILD_SETUP**
 **EXTERNAL_SOURCES**
-android {
-    sourceSets {
-        main {
-            def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("", "/")
-            res.srcDirs += (unityProjectPath +  '/Assets/Plugins/Android/Firebase/res/values/google-services.xml')
-        }
-    }
-} 

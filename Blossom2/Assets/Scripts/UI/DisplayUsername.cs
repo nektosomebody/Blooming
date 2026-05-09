@@ -8,7 +8,7 @@ public class DisplayUsername : MonoBehaviour
 
     private System.EventHandler authStateHandler;
     private static string pendingStatusMessage;
-    private static DisplayUsername instance;
+    public static DisplayUsername instance;
 
     void Awake()
     {
@@ -43,7 +43,10 @@ public class DisplayUsername : MonoBehaviour
     {
         FirebaseAuth.DefaultInstance.StateChanged -= authStateHandler;
     }
-
+    public void UpdateUsername()
+{
+    DisplayCurrentUsername();
+}
     void DisplayCurrentUsername()
     {
         FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;

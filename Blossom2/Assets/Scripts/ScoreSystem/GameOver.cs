@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-    [SerializeField] TMP_Text totalBest;
+    [SerializeField] TMP_Text totalTime;
+    [SerializeField] TMP_Text totalScore;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] string levelType = "alg1";
     [SerializeField] LevelData levelData;
@@ -18,7 +19,7 @@ public class GameOver : MonoBehaviour
     ScoreCalculator scoreCalculator;
     private float delay = 6f;
 
-    
+
 
     void Start()
     {
@@ -56,12 +57,11 @@ public class GameOver : MonoBehaviour
         int score = scoreCalculator != null ? scoreCalculator.CalculateScore(current) : 0;
 
         string uid = FirebaseAuth.DefaultInstance.CurrentUser?.UserId;
-        if (uid == null || DatabaseConnection.Instance == null)
-        {
-            totalBest.text = $"Score: {score}\nTotal time: {current}";
-            StartCoroutine(ShowGameOverWithDelay());
-            return;
-        }
+
+
+        totalTime.text = $"{score}";
+        totalScore.text = $"{Mathf.Floor(current / 60)}:{current % 60:00}";
+        StartCoroutine(ShowGameOverWithDelay());
 
         DatabaseConnection.Instance.SaveScore(uid, levelType, score, () =>
         {
@@ -69,11 +69,12 @@ public class GameOver : MonoBehaviour
             {
                 DatabaseConnection.Instance.LoadBestTime(uid, levelType, best =>
                 {
-                    totalBest.text = $"Score: {score}\nTotal time: {current}\nBest time: {best}";
                     StartCoroutine(ShowGameOverWithDelay());
                 });
             });
         });
+
+
     }
 
     private IEnumerator ShowGameOverWithDelay()

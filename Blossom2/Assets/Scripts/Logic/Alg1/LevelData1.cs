@@ -64,9 +64,19 @@ public class LevelData1 : LevelData
                 Debug.Log("You've won!");
                 PlayerPrefs.SetInt(LevelsKey, PlayerPrefs.GetInt(LevelsKey, 0) + 1);
                 PlayerPrefs.Save();
-                
+
                 RaisePlayerWon();
-                Camera.main.GetComponent<VictoryCamera>().OnPlayerWon();
+
+                if (Camera.main != null)
+                {
+                    VictoryCamera victoryCamera = Camera.main.GetComponent<VictoryCamera>();
+                    if (victoryCamera != null)
+                        victoryCamera.OnPlayerWon();
+                    else
+                        Debug.LogWarning("[Alg1] VictoryCamera not found on Main Camera");
+                }
+                else
+                    Debug.LogError("[Alg1] Main Camera is null");
             }
         }
     }

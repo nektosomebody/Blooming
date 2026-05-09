@@ -199,6 +199,22 @@ MonoBehaviour:
     m_Key: alg2.description
     m_Metadata:
       m_Items: []
+  - m_Id: 6953938370236416
+    m_Key: alg2.awesome
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6954207405477888
+    m_Key: alg2.totalTimeText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6956673689784320
+    m_Key: alg2.scoreText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6966547274338304
+    m_Key: mainMenu.signOut
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

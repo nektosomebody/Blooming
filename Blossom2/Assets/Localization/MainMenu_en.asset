@@ -202,6 +202,22 @@ MonoBehaviour:
     m_Localized: Open the way for the largest flow!
     m_Metadata:
       m_Items: []
+  - m_Id: 6953938370236416
+    m_Localized: AWESOME!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6954207405477888
+    m_Localized: 'Total time:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6956673689784320
+    m_Localized: 'Score:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6966547274338304
+    m_Localized: Sign Out
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
