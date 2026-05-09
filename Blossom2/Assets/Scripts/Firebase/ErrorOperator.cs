@@ -71,10 +71,10 @@ public class ErrorOperator : MonoBehaviour
     {
         TMP_Text label = context switch
         {
-            ErrorContext.Register     => registerGeneralError,
-            ErrorContext.SignIn       => signInGeneralError,
+            ErrorContext.Register => registerGeneralError,
+            ErrorContext.SignIn => signInGeneralError,
             ErrorContext.ForgetPassword => forgetPassError,
-            _                        => null
+            _ => null
         };
         Show(label, GetFirebaseMessage(e));
     }
@@ -85,12 +85,12 @@ public class ErrorOperator : MonoBehaviour
         {
             return (Firebase.Auth.AuthError)firebaseEx.ErrorCode switch
             {
-                Firebase.Auth.AuthError.UserNotFound                          => errorUserNotFound.GetLocalizedString(),
+                Firebase.Auth.AuthError.UserNotFound => errorUserNotFound.GetLocalizedString(),
                 Firebase.Auth.AuthError.WrongPassword or
-                Firebase.Auth.AuthError.InvalidCredential                     => errorWrongPassword.GetLocalizedString(),
-                Firebase.Auth.AuthError.EmailAlreadyInUse                    => errorEmailInUse.GetLocalizedString(),
-                Firebase.Auth.AuthError.InvalidEmail                         => errorInvalidEmail.GetLocalizedString(),
-                _                                                             => errorAuthGeneric.GetLocalizedString()
+                Firebase.Auth.AuthError.InvalidCredential => errorWrongPassword.GetLocalizedString(),
+                Firebase.Auth.AuthError.EmailAlreadyInUse => errorEmailInUse.GetLocalizedString(),
+                Firebase.Auth.AuthError.InvalidEmail => errorInvalidEmail.GetLocalizedString(),
+                _ => errorAuthGeneric.GetLocalizedString()
             };
         }
         return errorGeneric.GetLocalizedString();

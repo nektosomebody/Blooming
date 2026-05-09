@@ -19,12 +19,12 @@ public class Spawner2: MonoBehaviour
     [SerializeField] float yPos = 0f;
     [SerializeField] int minVertexCapacity = 5;
     [SerializeField] int maxVertexCapacity = 20;
-    LevelResultManager resultManager;
+    LevelHolder2 resultManager;
     FinalAlgorithm flowAlg;
     private void Start()
     {
         flowAlg = GetComponent<FinalAlgorithm>();
-        resultManager = GetComponent<LevelResultManager>();
+        resultManager = GetComponent<LevelHolder2>();
         SpawnLevel();       
     }
     private void SpawnLevel()
@@ -34,6 +34,7 @@ public class Spawner2: MonoBehaviour
 
         HashSet<TargetVertex> targetVertices = new();
         HashSet<MiddleVertexView> middleVertices = new();
+        HashSet<SourceVertexView> sourceVertices = new();
         Dictionary<int, VertexViewParent> vertexViewMap = new();
         
         // instantiate vertices
@@ -46,6 +47,7 @@ public class Spawner2: MonoBehaviour
             if (flowAlg.Sources.Contains(vertDomain))
             {
                 obj = Instantiate(sourcePrefab, pos, Quaternion.identity);
+                sourceVertices.Add(obj.GetComponent<SourceVertexView>());
             }
             else if (flowAlg.Targets.Contains(vertDomain))
             {
@@ -62,9 +64,12 @@ public class Spawner2: MonoBehaviour
             view.Init(vertDomain, capacity);
             vertexViewMap[vertDomain.ind] = view;
             if (view is MiddleVertexView middleView)
+            {
                 middleVertices.Add(middleView);
+                middleView.OverloadStateChanged += resultManager.OnVertexOverloadChanged;
+            }
         }
-        resultManager.Init(targetVertices, middleVertices, flowAlg.GetMaxFlow());
+        resultManager.Init(targetVertices, middleVertices, flowAlg.GetMaxFlow(), sourceVertices);
         var all_edges = flowAlg.GetEdges();
         /*
         because all_vertexes contains all the vertices that are on the field, 
@@ -107,9 +112,14 @@ public class Spawner2: MonoBehaviour
                     edgeView.FlowIncreased += toView.IncreaseFlow;
                     edgeView.FlowDecreased += toView.DecreaseFlow;
                     if (vertexViewMap[from.ind] is MiddleVertexView midView)
-                    {
                         midView.RegisterOutgoingEdge(edgeView);
-                    }
+
+                    var capturedTarget = toView;
+                    edgeView.SetAnimationCallback(() => capturedTarget.OnFlowArrived());
+                    if (vertexViewMap[from.ind] is SourceVertexView srcView)
+                        srcView.RegisterOutgoingEdgeForAnimation(edgeView);
+                    if (toView is MiddleVertexView toMidView)
+                        toMidView.RegisterIncomingEdge();
                 }
             }
         }

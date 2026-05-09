@@ -7,11 +7,6 @@ public class PauseGame : MonoBehaviour
 {
     [SerializeField] GameObject pausePanel;
     [SerializeField] TimerUI timer;
-
-    public void Start()
-    {
-        Debug.LogError("Timer: " + (timer == null));
-    }
     public void Pause()
     {
         pausePanel.SetActive(true);

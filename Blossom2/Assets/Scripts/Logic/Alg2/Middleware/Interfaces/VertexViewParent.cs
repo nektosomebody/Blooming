@@ -12,4 +12,5 @@ public abstract class VertexViewParent : MonoBehaviour
     public abstract void Init(Vertex v, int capacity);
     public abstract void IncreaseFlow(int delta);
     public abstract void DecreaseFlow(int delta);
+    public virtual void OnFlowArrived() { }
 }

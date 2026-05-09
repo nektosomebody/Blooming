@@ -40,7 +40,7 @@ public class GameOver : MonoBehaviour
             Debug.Log($"Alg2 levels completed: {completedLevels + 1}, Vertex count next: {6 + (completedLevels + 1) / 3}");
         }
 
-        if (levelData is LevelResultManager resultManager)
+        if (levelData is LevelHolder2 resultManager)
         {
             resultManager.PlayTargetVictoryAnimations();
 

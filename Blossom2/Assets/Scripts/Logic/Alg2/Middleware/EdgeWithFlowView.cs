@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Alg2.Domains;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class EdgeWithFlowView : MonoBehaviour
     public event Action<int> FlowDecreased;
     public int Capacity { get; private set; }
     public int CurFlow { get; private set; }
+    float _flowAnimSpeed = 3f;
+    Action _onFlowAnimComplete;
     float edgeLength;
     Vector2 swipeStart;
     bool isSwiping;
@@ -41,6 +44,7 @@ public class EdgeWithFlowView : MonoBehaviour
         startPos = flowInstance.transform.position + flowSpacing;
         posFrom = from;
         posTo = to;
+        _flowAnimSpeed = Capacity;
 
         GameObject labelObj = Instantiate(labelPrefab, transform.position + labelSpacing, Quaternion.Euler(90f, 0f, 0f));
         flowLabel = labelObj.GetComponent<TMP_Text>();
@@ -52,6 +56,34 @@ public class EdgeWithFlowView : MonoBehaviour
     public void SetTargetVertex(VertexViewParent target)
     {
         targetMiddleVertex = target as MiddleVertexView;
+    }
+
+    public void SetAnimationCallback(Action onComplete)
+    {
+        _onFlowAnimComplete = onComplete;
+    }
+
+    public void PlayFlowAnimation()
+    {
+        StartCoroutine(AnimateFlow());
+    }
+
+    private IEnumerator AnimateFlow()
+    {
+        float speed = Capacity * _flowAnimSpeed;
+        float currentLength = 0f;
+        Vector3 scale = flowInstance.transform.localScale;
+        scale.z = 0f;
+        flowInstance.transform.localScale = scale;
+        while (currentLength < edgeLength)
+        {
+            currentLength = Mathf.Min(currentLength + speed * Time.deltaTime, edgeLength);
+            scale.z = currentLength;
+            flowInstance.transform.localScale = scale;
+            flowInstance.transform.position = startPos + flowInstance.transform.forward * (currentLength / 2f);
+            yield return null;
+        }
+        _onFlowAnimComplete?.Invoke();
     }
 
     private void OnMouseDown()
@@ -78,11 +110,12 @@ public class EdgeWithFlowView : MonoBehaviour
 
         if (projection > 0)
         {
-            Debug.Log("Increasing flow");
+            Debug.Log(projection);
             IncreaseFlow(units);
         }
         else
         {
+            Debug.Log(projection);
             DecreaseFlow(units);
         }
     }
@@ -90,26 +123,24 @@ public class EdgeWithFlowView : MonoBehaviour
     private void IncreaseFlow(int multi)
     {
         int availableFlow = startMiddleVertex != null ? startMiddleVertex.CurFlow : int.MaxValue;
+        int canAdd = Mathf.Min(multi, availableFlow);
         int oldFlow = CurFlow;
-        CurFlow = Mathf.Clamp(CurFlow + multi, 0, Capacity);
-        CurFlow = Mathf.Min(CurFlow, availableFlow);
+        CurFlow = Mathf.Clamp(CurFlow + canAdd, 0, Capacity);
         int delta = CurFlow - oldFlow;
-        if (delta > 0)
+        if (delta <= 0) return;
+
+        if (startMiddleVertex != null && startMiddleVertex.VertexIsOverloaded())
         {
-            if (startMiddleVertex != null && startMiddleVertex.VertexIsOverloaded())
-            {
-                Debug.Log("Cannot increase flow, vertex is overloaded");
-                CurFlow = oldFlow; // revert to old flow
-                return;
-            }
-            Debug.Log($"try to decrease flow from {startMiddleVertex?.Ind}");
-            startMiddleVertex?.DecreaseFlow(delta);
-            targetMiddleVertex?.OnOutgoingFlowChanged(oldFlow, CurFlow);
-            // UpdateFlowVisual();
-            UpdateFlowLabel();
-            FlowIncreased?.Invoke(delta);
-            if (startMiddleVertex != null) startMiddleVertex.StartRotation(delta);
+            Debug.Log("Cannot increase flow, vertex is overloaded");
+            CurFlow = oldFlow;
+            return;
         }
+        startMiddleVertex?.OnOutgoingFlowChanged(oldFlow, CurFlow);
+        targetMiddleVertex?.OnIncomingFlowChanged(oldFlow, CurFlow);
+        startMiddleVertex?.DecreaseFlow(delta);
+        FlowIncreased?.Invoke(delta);
+        UpdateFlowLabel();
+        if (startMiddleVertex != null) startMiddleVertex.StartRotation(delta);
     }
 
     private void DecreaseFlow(int multi)
@@ -120,11 +151,14 @@ public class EdgeWithFlowView : MonoBehaviour
         if (delta > 0)
         {
             Debug.Log($"start: {startMiddleVertex?.Ind} end {targetMiddleVertex?.Ind} decrease flow by {delta}");
-            startMiddleVertex?.IncreaseFlow(delta);
+            startMiddleVertex?.OnOutgoingFlowChanged(oldFlow, CurFlow);
             targetMiddleVertex?.OnIncomingFlowChanged(oldFlow, CurFlow);
+            startMiddleVertex?.IncreaseFlow(delta);
+            FlowDecreased?.Invoke(delta); // targetMiddleVertex?.DecreaseFlow(delta);
+            
             // UpdateFlowVisual();
             UpdateFlowLabel();
-            FlowDecreased?.Invoke(delta);
+            
             if (startMiddleVertex != null) startMiddleVertex.ReverseRotation(delta);
         }
     }

@@ -4,6 +4,15 @@ using TMPro;
 using System;
 using System.Collections.Generic;
 
+public class OverloadChangedArgs : EventArgs
+{
+    public int CurFlow { get; }
+    public int Capacity { get; }
+    public bool IsOverloaded { get; }
+    public OverloadChangedArgs(int curFlow, int capacity, bool isOverloaded)
+    { CurFlow = curFlow; Capacity = capacity; IsOverloaded = isOverloaded; }
+}
+
 public class MiddleVertexView : VertexViewParent
 {
     [SerializeField] GameObject labelObj;
@@ -13,9 +22,13 @@ public class MiddleVertexView : VertexViewParent
     TMP_Text flowLabel;
     public int Capacity { get; private set; }
     public event EventHandler MidFlowDecreased;
+    public event EventHandler<OverloadChangedArgs> OverloadStateChanged;
+    private bool _wasOverloaded = false;
+    private int _incomingEdgeCount = 0;
+    private int _arrivedCount = 0;
     private Color originalColor;
     private float originalFontSize;
-    private const float OverloadedFontSize = 120f;
+    private const float OverloadedFontSize = 140f;
     private static readonly Color OverloadedColor = new Color(1, 0, 0, 1);
 
     float targetAngle = 0f;
@@ -73,6 +86,18 @@ public class MiddleVertexView : VertexViewParent
         outgoingEdges.Add(edge);
     }
 
+    public void RegisterIncomingEdge() => _incomingEdgeCount++;
+
+    public override void OnFlowArrived()
+    {
+        _arrivedCount++;
+        if (_arrivedCount == 1)
+        {
+            foreach (var edge in outgoingEdges)
+                edge.PlayFlowAnimation();
+        }
+    }
+
     public void OnIncomingFlowChanged(int oldFlow, int newFlow)
     {
         totalIncomingFlow += (newFlow - oldFlow);
@@ -82,12 +107,9 @@ public class MiddleVertexView : VertexViewParent
 
     private void EnforceFlowConservation()
     {
-        if (totalOutgoingFlow > totalIncomingFlow)
-        {
-            int excess = totalOutgoingFlow - totalIncomingFlow;
-            Debug.Log($"Vertex {ind}: enforcing conservation, excess: {excess}");
-            CascadeDecreaseOutgoing(excess);
-        }
+        int excess = totalOutgoingFlow - totalIncomingFlow;
+        Debug.Log($"Vertex {ind}: enforcing conservation, excess: {excess}");
+        CascadeDecreaseOutgoing(excess);
     }
 
     private void CascadeDecreaseOutgoing(int excess)
@@ -118,6 +140,7 @@ public class MiddleVertexView : VertexViewParent
     {
         totalOutgoingFlow += (newFlow - oldFlow);
         Debug.Log($"Vertex {ind}: outgoing flow changed, total: {totalOutgoingFlow}");
+
     }
 
     public override void IncreaseFlow(int delta)
@@ -130,7 +153,7 @@ public class MiddleVertexView : VertexViewParent
     {
         if (CurFlow >= delta)
         {
-            CurFlow -= delta;  
+            CurFlow -= delta;
         }
         else
         {
@@ -145,7 +168,8 @@ public class MiddleVertexView : VertexViewParent
         if (flowLabel != null)
         {
             flowLabel.text = $"{CurFlow}/{Capacity}";
-            if (VertexIsOverloaded())
+            bool isOverloaded = VertexIsOverloaded();
+            if (isOverloaded)
             {
                 flowLabel.color = OverloadedColor;
                 flowLabel.fontSize = OverloadedFontSize;
@@ -156,12 +180,17 @@ public class MiddleVertexView : VertexViewParent
                 flowLabel.color = originalColor;
                 flowLabel.fontSize = originalFontSize;
             }
+
+            if (isOverloaded != _wasOverloaded)
+            {
+                _wasOverloaded = isOverloaded;
+                OverloadStateChanged?.Invoke(this, new OverloadChangedArgs(CurFlow, Capacity, isOverloaded));
+            }
         }
-
-
     }
     public bool VertexIsOverloaded()
     {
-        return CurFlow > Capacity;
+        Debug.Log($"Vertex {ind}: total incoming flow = {totalIncomingFlow}, total outgoing flow = {totalOutgoingFlow}, capacity = {Capacity}, curFlow = {CurFlow}");
+        return totalIncomingFlow > Capacity;
     }
 }

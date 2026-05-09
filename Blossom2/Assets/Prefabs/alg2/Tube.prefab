@@ -53,7 +53,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 30, y: 16, z: 1.002}
+  m_Size: {x: 21, y: 16, z: 1.002}
   m_Center: {x: 0, y: 20, z: 0}
 --- !u!114 &4324252286817927643
 MonoBehaviour:
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelPrefab: {fileID: 1085852410719042660, guid: aa94a2517b1bf7344b9825712aa35ab3, type: 3}
-  SwipeThreshold: 70
+  SwipeThreshold: 40
   flowSpacing: {x: 0, y: 2, z: 0}
   labelSpacing: {x: 0, y: 15, z: 10}
 --- !u!1001 &1204305314164905552

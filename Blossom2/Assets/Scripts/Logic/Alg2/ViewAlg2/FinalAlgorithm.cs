@@ -58,6 +58,7 @@ namespace Alg2
         public void Awake()
         {
             int completedLevels = PlayerPrefs.GetInt(Alg2LevelsKey, 0);
+            Debug.Log($"Completed Levels: {completedLevels}");
             n = ComputeVertexCount(completedLevels);
 
             GenerateLevel();
