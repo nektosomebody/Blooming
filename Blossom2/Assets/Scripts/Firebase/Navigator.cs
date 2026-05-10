@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Navigator : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class Navigator : MonoBehaviour
     [Header("Forgot password input")]
     public TMPro.TMP_InputField emailToChangePass;
 
+    [Header("Status messages")]
+    [SerializeField] TMP_Text registerStatusText;
+    [SerializeField] TMP_Text signInStatusText;
+    [SerializeField] TMP_Text forgetPasswordStatusText;
+
     [SerializeField] ErrorOperator errorOperator;
 
     private Authentication registration;
@@ -26,6 +32,24 @@ public class Navigator : MonoBehaviour
     private void Awake()
     {
         registration = new Authentication();
+    }
+
+    private void ShowStatus(TMP_Text statusText, string message)
+    {
+        if (statusText != null)
+        {
+            statusText.text = message;
+            statusText.gameObject.SetActive(true);
+            Debug.Log(message);
+        }
+    }
+
+    private void HideStatus(TMP_Text statusText)
+    {
+        if (statusText != null)
+        {
+            statusText.gameObject.SetActive(false);
+        }
     }
 
     public void OnSignIn() => _ = SignInUser();
@@ -42,13 +66,19 @@ public class Navigator : MonoBehaviour
 
         try
         {
+            ShowStatus(forgetPasswordStatusText, "Sending data...");
             await registration.ForgetPassword(emailToChangePass.text);
+            ShowStatus(forgetPasswordStatusText, "Password reset email sent!");
+            Invoke(nameof(HideForgetPasswordStatus), 2f);
         }
         catch (Exception e)
         {
+            HideStatus(forgetPasswordStatusText);
             errorOperator.ShowFirebaseError(e, ErrorContext.ForgetPassword);
         }
     }
+
+    private void HideForgetPasswordStatus() => HideStatus(forgetPasswordStatusText);
 
     private async Task SignInUser()
     {
@@ -61,12 +91,15 @@ public class Navigator : MonoBehaviour
 
         try
         {
+            ShowStatus(signInStatusText, "Sending data...");
             await registration.SignInUser(signInEmail.text, signInPassword.text);
-            Debug.Log("User signed in successfully.");
+            DisplayUsername.SetLoadingMessage("Loading profile...");
+            await Task.Delay(500);
             LoadNextScene();
         }
         catch (Exception e)
         {
+            HideStatus(signInStatusText);
             errorOperator.ShowFirebaseError(e, ErrorContext.SignIn);
         }
     }
@@ -85,12 +118,15 @@ public class Navigator : MonoBehaviour
 
         try
         {
+            ShowStatus(registerStatusText, "Sending data...");
             await registration.CreateUser(registerEmail.text, registerPassword.text, registerName.text);
-            Debug.Log("User created successfully.");
+            DisplayUsername.SetLoadingMessage("Loading profile...");
+            await Task.Delay(500);
             LoadNextScene();
         }
         catch (Exception e)
         {
+            HideStatus(registerStatusText);
             errorOperator.ShowFirebaseError(e, ErrorContext.Register);
         }
     }

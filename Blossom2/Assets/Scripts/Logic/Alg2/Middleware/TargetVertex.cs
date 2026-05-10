@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TargetVertex : VertexViewParent
 {
+    private static readonly int BloomingHash = Animator.StringToHash("Blooming");
+
     public int FlowAmount => CurFlow;
     public EventHandler FlowChanged;
 
@@ -24,10 +26,17 @@ public class TargetVertex : VertexViewParent
         if (CurFlow >= delta)
         {
             CurFlow -= delta;
-        } 
+        }
         else
         {
             CurFlow = 0;
-        }       
+        }
+    }
+
+    public void PlayVictoryAnimation()
+    {
+        Debug.Log($"TargetVertex {ind} is blooming!");
+        Animator animator = GetComponentInChildren<Animator>();
+        animator.Play(BloomingHash);
     }
 }

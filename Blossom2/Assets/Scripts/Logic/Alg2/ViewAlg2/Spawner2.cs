@@ -65,7 +65,6 @@ public class Spawner2: MonoBehaviour
                 middleVertices.Add(middleView);
         }
         resultManager.Init(targetVertices, middleVertices, flowAlg.GetMaxFlow());
-        GetComponent<LevelFinished>().Init(resultManager);
         var all_edges = flowAlg.GetEdges();
         /*
         because all_vertexes contains all the vertices that are on the field, 

@@ -2,12 +2,14 @@ using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
 using System;
+using TMPro;
 
 public class UsersProfile : MonoBehaviour
 {
     [SerializeField] GameObject currAvatar;
     [SerializeField] GameObject changeAvatarWnd;
     [SerializeField] GameObject userAvatar;
+    [SerializeField] TMP_Text statusText;
     DatabaseConnection db;
     bool isLoggedIn;
     FirebaseAuth auth;
@@ -50,10 +52,45 @@ public class UsersProfile : MonoBehaviour
 
     private void AvatarChanged(AvatarData data)
     {
+        ShowStatus("Sending data...");
+
         db.SaveAvatar(auth.CurrentUser.UserId, data.avatarIndex);
         db.SaveUsername(auth.CurrentUser.UserId, data.userName);
-        auth.CurrentUser.UpdateUserProfileAsync(new UserProfile { DisplayName = data.userName });
-        currAvatar.GetComponent<SpriteRenderer>().sprite = data.avatarSprite;
+
+        ShowStatus("Waiting for confirmation...");
+
+        auth.CurrentUser.UpdateUserProfileAsync(new UserProfile { DisplayName = data.userName }).ContinueWith(task =>
+        {
+            if (task.IsCompletedSuccessfully)
+            {
+                ShowStatus("Data saved successfully!");
+                currAvatar.GetComponent<SpriteRenderer>().sprite = data.avatarSprite;
+
+                Invoke(nameof(HideStatus), 2f);
+            }
+            else
+            {
+                ShowStatus("Error saving data. Please try again.");
+            }
+        });
+    }
+
+    private void ShowStatus(string message)
+    {
+        if (statusText != null)
+        {
+            statusText.text = message;
+            statusText.gameObject.SetActive(true);
+            Debug.Log(message);
+        }
+    }
+
+    private void HideStatus()
+    {
+        if (statusText != null)
+        {
+            statusText.gameObject.SetActive(false);
+        }
     }
 
     private void GoToRegistration()

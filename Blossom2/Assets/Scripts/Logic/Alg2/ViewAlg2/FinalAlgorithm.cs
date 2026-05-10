@@ -13,11 +13,15 @@ namespace Alg2
     public class FinalAlgorithm: MonoBehaviour
     {
         [SerializeField] int n = 6;
+        [SerializeField] private int initialVertexCount = 6;
+        [SerializeField] private int maxVertexCount = 15;
         [SerializeField] private float Width = 100f;
         [SerializeField] private float Height = 100f;
         [SerializeField] private int countSources = 2;
         [SerializeField] private int countTargets = 2;
         [SerializeField] Camera cam;
+
+        private const string Alg2LevelsKey = "alg2_levels_completed";
 
         [SerializeField] int minFlowAmount = 3;
         [SerializeField] int maxFlowAmount = 15;
@@ -53,8 +57,17 @@ namespace Alg2
 
         public void Awake()
         {
+            int completedLevels = PlayerPrefs.GetInt(Alg2LevelsKey, 0);
+            n = ComputeVertexCount(completedLevels);
+
             GenerateLevel();
-            
+        }
+
+        int ComputeVertexCount(int completedLevels)
+        {
+            int vertexCount = initialVertexCount + (completedLevels / 3);
+
+            return Mathf.Min(vertexCount, maxVertexCount);
         }
         public void Start()
         {

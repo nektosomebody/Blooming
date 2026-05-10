@@ -62,7 +62,7 @@ public class SettingsManager: MonoBehaviour
         {
             case "English":
                 return "en";
-            case "Русский":
+            case "Russian":
                 return "ru";
             default:
                 return "en";

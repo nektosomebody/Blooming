@@ -29,6 +29,36 @@ public class LevelResultManager : LevelData
             vert.FlowChanged += CheckIfWin;
     }
 
+    public void PlayTargetVictoryAnimations()
+    {
+        foreach (var targetVertex in targetVertices)
+        {
+            targetVertex.PlayVictoryAnimation();
+        }
+    }
+
+    public Vector3 GetLevelCenter()
+    {
+        Vector3 sum = Vector3.zero;
+        int count = 0;
+
+        foreach (var middle in middleVertices)
+        {
+            sum += middle.transform.position;
+            count++;
+        }
+        foreach (var middle in targetVertices)
+        {
+            sum += middle.transform.position;
+            count++;
+        }
+
+        if (count == 0)
+            return Vector3.zero;
+
+        return sum / count;
+    }
+
     void CheckIfWin(object sender, EventArgs e)
     {
         int totalFlow = targetVertices.Sum(v => v.FlowAmount);

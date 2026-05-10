@@ -4,34 +4,34 @@ using System.Text.RegularExpressions;
 public static class InputValidator
 {
     private static readonly Regex NamePattern    = new Regex(@"^[А-Яа-яёЁA-Za-z]+$");
-    private static readonly Regex EmailPattern   = new Regex(@"^[A-Za-z@._]+$");
-    private static readonly Regex PasswordPattern = new Regex(@"^[A-Za-z0-9@._]+$");
+    private static readonly Regex EmailPattern   = new Regex(@"^[A-Za-z0-9@._-]+$");
+    private static readonly Regex PasswordPattern = new Regex(@"^[A-Za-z0-9@._-]+$");
 
     // Returns null if valid, otherwise — error message.
     public static string ValidateName(string name)
     {
         if (string.IsNullOrEmpty(name) || name.Length < 3 || name.Length > 20)
-            return "Имя: от 3 до 20 символов";
+            return "Name: 3 to 20 characters";
         if (!NamePattern.IsMatch(name))
-            return "Только буквы русского и английского алфавита";
+            return "Only letters (Russian and English alphabet)";
         return null;
     }
 
     public static string ValidateEmail(string email)
     {
         if (string.IsNullOrEmpty(email) || email.Length < 3 || email.Length > 50)
-            return "Почта: от 3 до 50 символов";
+            return "Email: 3 to 50 characters";
         if (!EmailPattern.IsMatch(email))
-            return "Только латинские буквы и символы @, ., _";
+            return "Only Latin letters and characters @, ., _";
         return null;
     }
 
     public static string ValidatePassword(string password)
     {
         if (string.IsNullOrEmpty(password) || password.Length < 3 || password.Length > 50)
-            return "Пароль: от 3 до 50 символов";
+            return "Password: 3 to 50 characters";
         if (!PasswordPattern.IsMatch(password))
-            return "Только латинские буквы, цифры и символы @, ., _";
+            return "Only Latin letters, digits, and characters @, ., _";
 
         int digitCount = 0;
         var distinctLetters = new HashSet<char>();
@@ -44,9 +44,9 @@ public static class InputValidator
         }
 
         if (digitCount < 4)
-            return "Не менее 4 цифр";
+            return "At least 4 digits required";
         if (distinctLetters.Count < 5)
-            return "Не менее 5 различных букв";
+            return "At least 5 different letters required";
 
         return null;
     }

@@ -104,7 +104,8 @@ public class EdgeWithFlowView : MonoBehaviour
             Debug.Log($"try to decrease flow from {startMiddleVertex?.Ind}");
             startMiddleVertex?.DecreaseFlow(delta);
             targetMiddleVertex?.OnOutgoingFlowChanged(oldFlow, CurFlow);
-            UpdateFlowVisual();
+            // UpdateFlowVisual();
+            UpdateFlowLabel();
             FlowIncreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.StartRotation(delta);
         }
@@ -120,13 +121,14 @@ public class EdgeWithFlowView : MonoBehaviour
             Debug.Log($"start: {startMiddleVertex?.Ind} end {targetMiddleVertex?.Ind} decrease flow by {delta}");
             startMiddleVertex?.IncreaseFlow(delta);
             targetMiddleVertex?.OnIncomingFlowChanged(oldFlow, CurFlow);
-            UpdateFlowVisual();
+            // UpdateFlowVisual();
+            UpdateFlowLabel();
             FlowDecreased?.Invoke(delta);
             if (startMiddleVertex != null) startMiddleVertex.ReverseRotation(delta);
         }
     }
 
-    private void UpdateFlowVisual()
+    private void UpdateFlowInstance()
     {
         float normalized = CurFlow / (float)Capacity;
 
@@ -136,7 +138,10 @@ public class EdgeWithFlowView : MonoBehaviour
         flowInstance.transform.localScale = scale;
         flowInstance.transform.position = startPos + flowInstance.transform.forward *
                                             (edgeLength * normalized / 2f);
-        if (flowLabel != null)
+    }
+    private void UpdateFlowLabel()
+    {
+       if (flowLabel != null)
             flowLabel.text = $"{CurFlow}/{Capacity}";
     }
     public void ResetCurFlow(object sender, EventArgs e)

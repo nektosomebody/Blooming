@@ -55,7 +55,6 @@ namespace Alg1
             float center_x = 0;
             float center_y = 0;
 
-            // заполнили нижний уровень
             for (int i = 0; i < cols_c * 2; i += 2)
             {
                 Vertex tmp_v = new(global_ind, center_x + delta + delta * i, center_y);
@@ -76,31 +75,28 @@ namespace Alg1
 
                     for (int j = 1; j < cols_c * 2 + 1; j += 2)
                     {
-                        // эту можно повернуть
                         Vertex tmp1 = new Vertex(global_ind, center_x + delta * j, center_y + delta * i, isPart: true, isRotateAble: true);
-                        
-                        // эту нельзя
+
                         Vertex tmp2 = new Vertex(global_ind + 1, center_x + delta + delta * j, center_y + delta * i, isPart: true);
                         if (j == cols_c * 2 - 1)
                         {
-                            tmp2.isPartOfPath = false; // последняя вершина не участвует в пути
+                            tmp2.isPartOfPath = false;
                         }
 
-                        // добавляем соседей
-                        tmp1.AddNeighbour(graph[i - 1][(j - 1) / 2]); // сверху
-                        tmp1.AddNeighbour(line[j - 1]); // предыдущий
-                        tmp1.AddNeighbour(tmp2); // следующего
+                        tmp1.AddNeighbour(graph[i - 1][(j - 1) / 2]);
+                        tmp1.AddNeighbour(line[j - 1]);
+                        tmp1.AddNeighbour(tmp2);
                         if (graph[i - 1][(j - 1) / 2].isPartOfPath)
                         {
-                            graph[i - 1][(j - 1) / 2].AddNeighbour(tmp1); // верхнему текущего
+                            graph[i - 1][(j - 1) / 2].AddNeighbour(tmp1);
                         }
-                        if (tmp2.isPartOfPath) {
-                            // следующему текущего
+                        if (tmp2.isPartOfPath)
+                        {
                             tmp2.AddNeighbour(tmp1);
                         }
                         if (line[j - 1].isPartOfPath)
                         {
-                            line[j - 1].AddNeighbour(tmp1); // предыдущему текущего
+                            line[j - 1].AddNeighbour(tmp1);
                         }
 
                         line.Add(tmp1);
@@ -117,7 +113,6 @@ namespace Alg1
                     }
                     for (int j = 0; j < cols_c * 2; j += 2)
                     {
-                        // слой из промежуточных вершин
                         Vertex v = new(global_ind, center_x + delta + delta * j, center_y + delta * i, isPart: flag);
                         graph[i - 1][j + 1].AddNeighbour(v);
                         if (flag)
@@ -147,11 +142,7 @@ namespace Alg1
                 if (end.isPartOfPath)
                 {
                     end.AddEdge(edge);
-
                 }
-                // добавляем только в одну сторону
-                // когда будем проверять путь, то просто посмотрим
-                // нет ли у нашего соседа ребра с нами
             }
         }
 
@@ -187,10 +178,6 @@ namespace Alg1
                 {
                     if (neighbor.isPartOfPath)
                     {
-                        /*
-                         хотим ходить только туда, где еще не посещена вращабельная вершина.
-                        если все соседи соседа, то есть вращабельные вершины, посещены, то нам незачем строить еще ребро
-                         */
                         foreach (Vertex n_neighbor in neighbor.AllNeighbors)
                         {
                             if (!visited.Contains(n_neighbor) && n_neighbor.isRotateAble)

@@ -21,6 +21,14 @@ public class TimerUI : MonoBehaviour
         // Time.timeScale = 1f;
     }
 
+    public void ResetTimer()
+    {
+        totalSeconds = 0f;
+        timerIsActive = true;
+        text.text = "Time:\r\n00:00";
+        Debug.Log("Timer reset");
+    }
+
     void Update()
     {
         if (!timerIsActive) return;
